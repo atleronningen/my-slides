@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Enterprise — Mestergruppen</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --purple: #4D1D82;
+    --purple-mid: #6C4D97;
+    --purple-light: #E3DEEC;
+    --red: #CF022B;
+    --orange: #EF7D00;
+    --white: #FFFFFF;
+    --off-white: #F8F6FC;
+    --dark: #1A0A2E;
+    --text-muted: #8B7FA8;
+    --slide-w: 1280px;
+    --slide-h: 720px;
+  }
+
+  html, body {
+    width: 100%; height: 100%; background: #0D0720;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+  }
+
+  /* ── TOOLBAR ── */
+  #toolbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: 52px;
+    background: rgba(13,7,32,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(77,29,130,0.4);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+  }
+  #toolbar .brand {
+    font-size: 13px; font-weight: 600; color: var(--purple-mid);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  #toolbar .controls { display: flex; align-items: center; gap: 12px; }
+  #toolbar button {
+    background: rgba(77,29,130,0.3);
+    border: 1px solid rgba(77,29,130,0.5);
+    color: var(--white); cursor: pointer;
+    width: 36px; height: 36px; border-radius: 8px;
+    font-size: 16px; display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+  }
+  #toolbar button:hover { background: var(--purple); border-color: var(--purple); }
+  #counter {
+    font-size: 13px; font-weight: 500; color: var(--text-muted);
+    min-width: 60px; text-align: center;
+  }
+  #fs-btn { font-size: 13px; }
+
+  /* ── STAGE ── */
+  #stage {
+    position: fixed; top: 52px; left: 0; right: 0; bottom: 0;
+    display: flex; align-items: center; justify-content: center;
+    perspective: 1200px;
+  }
+
+  /* ── SLIDE FRAME ── */
+  #slide-frame {
+    width: var(--slide-w);
+    height: var(--slide-h);
+    position: relative;
+    transform-origin: center center;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06);
+  }
+
+  /* ── SLIDES ── */
+  .slide {
+    position: absolute; inset: 0;
+    opacity: 0; pointer-events: none;
+    transition: opacity .5s ease, transform .5s ease;
+    transform: translateX(60px);
+  }
+  .slide.active {
+    opacity: 1; pointer-events: all; transform: translateX(0);
+  }
+  .slide.prev { transform: translateX(-60px); }
+
+  /* ── PROGRESS BAR ── */
+  #progress {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 3px;
+    background: rgba(77,29,130,0.2);
+    z-index: 100;
+  }
+  #progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple), var(--red), var(--orange));
+    transition: width .4s ease;
+  }
+
+  /* ── DOT NAV ── */
+  #dots {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px; z-index: 100;
+  }
+  .dot {
+    width: 6px; height: 6px; border-radius: 3px;
+    background: rgba(255,255,255,0.25); cursor: pointer;
+    transition: all .3s ease;
+  }
+  .dot.active { width: 24px; background: var(--purple-mid); }
+
+  /* ══════════════════════════════════════════
+     SLIDE DESIGNS
+  ══════════════════════════════════════════ */
+
+  /* ── SLIDE 1: COVER ── */
+  .s1 {
+    background: var(--dark);
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+  }
+  .s1-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 70% at 75% 40%, rgba(77,29,130,0.5) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 20% 80%, rgba(207,2,43,0.15) 0%, transparent 60%);
+  }
+  .s1-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(77,29,130,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(77,29,130,0.08) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .s1-content {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column;
+    height: 100%; padding: 80px 100px;
+    justify-content: flex-end;
+  }
+  .s1-tag {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .s1-tag::before {
+    content: ''; display: block;
+    width: 32px; height: 2px; background: var(--orange);
+  }
+  .s1-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 80px; font-weight: 900; line-height: 1;
+    color: var(--white); margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+  .s1-title span { color: var(--purple-mid); }
+  .s1-subtitle {
+    font-size: 20px; font-weight: 300; color: rgba(255,255,255,0.55);
+    margin-bottom: 60px; letter-spacing: 0.02em;
+  }
+  .s1-meta {
+    display: flex; gap: 48px;
+  }
+  .s1-meta-item { display: flex; flex-direction: column; gap: 4px; }
+  .s1-meta-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+  .s1-meta-value { font-size: 15px; font-weight: 600; color: var(--white); }
+  .s1-logo {
+    position: absolute; top: 48px; right: 60px; z-index: 2;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.4); text-transform: uppercase;
+  }
+  .s1-accent {
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--purple) 0%, var(--red) 50%, var(--orange) 100%);
+  }
+  .s1-orb {
+    position: absolute; top: 60px; right: 80px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(108,77,151,0.6), rgba(77,29,130,0.2) 50%, transparent 70%);
+    border: 1px solid rgba(108,77,151,0.3);
+    box-shadow: inset 0 0 60px rgba(77,29,130,0.3), 0 0 80px rgba(77,29,130,0.2);
+  }
+  .s1-orb::after {
+    content: '';
+    position: absolute; top: 30%; left: 20%;
+    width: 60%; height: 60%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(207,2,43,0.2), transparent 70%);
+  }
+
+  /* ── CONTENT SLIDES BASE ── */
+  .content-slide {
+    background: var(--off-white);
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+  }
+  .content-slide::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--purple) 0%, var(--red) 50%, var(--orange) 100%);
+  }
+  .slide-header {
+    background: var(--purple);
+    padding: 36px 60px 32px;
+    position: relative; overflow: hidden;
+  }
+  .slide-header::after {
+    content: '';
+    position: absolute; right: -60px; top: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .slide-num {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.35); margin-bottom: 8px;
+  }
+  .slide-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px; font-weight: 700; color: var(--white);
+    line-height: 1.1;
+  }
+  .slide-sub {
+    font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.55);
+    margin-top: 8px;
+  }
+  .slide-body { flex: 1; padding: 40px 60px; overflow: hidden; }
+
+  /* ── SLIDE 2: BEHOV ── */
+  .s2-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; height: 100%; }
+  .s2-left { display: flex; flex-direction: column; gap: 16px; }
+  .s2-text {
+    font-size: 14px; line-height: 1.7; color: #3A2F52;
+    padding: 20px; background: white; border-radius: 12px;
+    border-left: 4px solid var(--purple-mid);
+    box-shadow: 0 2px 12px rgba(77,29,130,0.06);
+  }
+  .s2-right { display: flex; flex-direction: column; gap: 12px; }
+  .s2-need-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--purple-mid); margin-bottom: 4px;
+  }
+  .need-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 18px; background: white; border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(77,29,130,0.06);
+    border: 1px solid rgba(77,29,130,0.08);
+  }
+  .need-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--purple-light); display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .need-text { font-size: 13px; line-height: 1.5; color: #3A2F52; font-weight: 500; }
+
+  /* ── SLIDE 3: TILNÆRMING ── */
+  .s3-phases {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; height: 100%;
+  }
+  .phase-card {
+    background: white; border-radius: 14px;
+    padding: 24px 20px;
+    box-shadow: 0 4px 20px rgba(77,29,130,0.08);
+    border: 1px solid rgba(77,29,130,0.08);
+    display: flex; flex-direction: column; gap: 14px;
+    position: relative; overflow: hidden;
+  }
+  .phase-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .phase-card:nth-child(1)::before { background: var(--purple); }
+  .phase-card:nth-child(2)::before { background: var(--purple-mid); }
+  .phase-card:nth-child(3)::before { background: var(--red); }
+  .phase-card:nth-child(4)::before { background: var(--orange); }
+  .phase-num {
+    font-size: 48px; font-weight: 900; line-height: 1;
+    color: rgba(77,29,130,0.07);
+    font-family: 'Playfair Display', serif;
+    position: absolute; top: 12px; right: 16px;
+  }
+  .phase-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--purple-mid);
+  }
+  .phase-name {
+    font-size: 15px; font-weight: 700; color: var(--dark); line-height: 1.3;
+  }
+  .phase-items { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .phase-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 12px; line-height: 1.5; color: #5A4F72;
+  }
+  .phase-item::before {
+    content: ''; display: block;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--purple-mid); flex-shrink: 0; margin-top: 6px;
+  }
+
+  /* ── FASE DETAIL SLIDES (4-7) ── */
+  .fase-body { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; height: 100%; }
+  .fase-desc {
+    background: white; border-radius: 14px; padding: 28px;
+    box-shadow: 0 4px 16px rgba(77,29,130,0.06);
+    border: 1px solid rgba(77,29,130,0.08);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .fase-desc-title {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--purple-mid);
+  }
+  .fase-desc-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 13.5px; line-height: 1.6; color: #3A2F52; padding-bottom: 12px;
+    border-bottom: 1px solid rgba(77,29,130,0.06);
+  }
+  .fase-desc-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .fase-desc-item::before {
+    content: '→'; color: var(--purple-mid); font-weight: 700; flex-shrink: 0;
+  }
+  .fase-deliverables {
+    background: var(--purple); border-radius: 14px; padding: 28px;
+    display: flex; flex-direction: column; gap: 16px;
+    position: relative; overflow: hidden;
+  }
+  .fase-deliverables::after {
+    content: '';
+    position: absolute; bottom: -40px; right: -40px;
+    width: 160px; height: 160px; border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .fase-del-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+  .del-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px; background: rgba(255,255,255,0.08);
+    border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
+  }
+  .del-check {
+    width: 22px; height: 22px; border-radius: 6px;
+    background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center;
+    font-size: 12px; flex-shrink: 0; color: white; font-weight: 700;
+  }
+  .del-text { font-size: 13px; line-height: 1.4; color: rgba(255,255,255,0.85); font-weight: 500; }
+
+  /* ── SLIDE 8: FORUTSETNINGER ── */
+  .prereq-list { display: flex; flex-direction: column; gap: 14px; }
+  .prereq-item {
+    display: flex; align-items: flex-start; gap: 18px;
+    padding: 18px 20px; background: white; border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(77,29,130,0.06);
+    border: 1px solid rgba(77,29,130,0.08);
+  }
+  .prereq-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--purple); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .prereq-text { font-size: 13px; line-height: 1.6; color: #3A2F52; }
+
+  /* ── SLIDE 9: LISENSIERING ── */
+  .lic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; height: 100%; }
+  .lic-card {
+    background: white; border-radius: 16px; padding: 36px;
+    box-shadow: 0 4px 24px rgba(77,29,130,0.08);
+    border: 2px solid rgba(77,29,130,0.1);
+    display: flex; flex-direction: column; gap: 20px;
+    position: relative; overflow: hidden;
+  }
+  .lic-card.featured { background: var(--purple); border-color: var(--purple); }
+  .lic-badge {
+    display: inline-flex; align-items: center;
+    padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    background: var(--purple-light); color: var(--purple);
+    width: fit-content;
+  }
+  .lic-card.featured .lic-badge { background: rgba(255,255,255,0.15); color: white; }
+  .lic-title { font-size: 22px; font-weight: 800; color: var(--dark); }
+  .lic-card.featured .lic-title { color: white; }
+  .lic-min {
+    font-size: 42px; font-weight: 900; color: var(--purple);
+    font-family: 'Playfair Display', serif; line-height: 1;
+  }
+  .lic-card.featured .lic-min { color: rgba(255,255,255,0.9); }
+  .lic-min-label { font-size: 13px; font-weight: 500; color: var(--text-muted); margin-top: 2px; }
+  .lic-card.featured .lic-min-label { color: rgba(255,255,255,0.5); }
+  .lic-features { display: flex; flex-direction: column; gap: 10px; }
+  .lic-feature {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: #3A2F52;
+  }
+  .lic-card.featured .lic-feature { color: rgba(255,255,255,0.8); }
+  .lic-feature::before {
+    content: '✓'; font-weight: 700; color: var(--purple-mid); flex-shrink: 0;
+  }
+  .lic-card.featured .lic-feature::before { color: var(--orange); }
+  .lic-note {
+    margin-top: auto; font-size: 12px; color: var(--text-muted);
+    padding: 12px; background: var(--off-white); border-radius: 8px;
+    line-height: 1.5;
+  }
+  .lic-card.featured .lic-note { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+
+  /* ── SLIDE 10: TEAM ── */
+  .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; height: 100%; }
+  .team-card {
+    background: white; border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(77,29,130,0.08);
+    border: 1px solid rgba(77,29,130,0.08);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .team-card-header {
+    background: var(--purple); padding: 28px 24px 20px;
+    position: relative; overflow: hidden;
+  }
+  .team-card-header::after {
+    content: '';
+    position: absolute; bottom: -30px; right: -30px;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .team-avatar {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 800; color: white;
+    margin-bottom: 16px; border: 2px solid rgba(255,255,255,0.2);
+  }
+  .team-name { font-size: 18px; font-weight: 700; color: white; margin-bottom: 4px; }
+  .team-role {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--orange);
+  }
+  .team-card-body { padding: 20px 24px; flex: 1; }
+  .team-bio { font-size: 12.5px; line-height: 1.65; color: #5A4F72; }
+
+  /* ── DARK SLIDES (1) ── */
+  .dark-header { background: var(--dark); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .slide.active .s1-tag { animation: fadeUp .6s .1s both; }
+  .slide.active .s1-title { animation: fadeUp .6s .2s both; }
+  .slide.active .s1-subtitle { animation: fadeUp .6s .3s both; }
+  .slide.active .s1-meta { animation: fadeUp .6s .4s both; }
+  .slide.active .phase-card { animation: fadeUp .5s both; }
+  .slide.active .phase-card:nth-child(2) { animation-delay: .1s; }
+  .slide.active .phase-card:nth-child(3) { animation-delay: .2s; }
+  .slide.active .phase-card:nth-child(4) { animation-delay: .3s; }
+  .slide.active .need-item,
+  .slide.active .prereq-item,
+  .slide.active .del-item { animation: fadeUp .4s both; }
+  .slide.active .need-item:nth-child(2), .slide.active .prereq-item:nth-child(2) { animation-delay: .08s; }
+  .slide.active .need-item:nth-child(3), .slide.active .prereq-item:nth-child(3) { animation-delay: .16s; }
+  .slide.active .need-item:nth-child(4), .slide.active .prereq-item:nth-child(4) { animation-delay: .24s; }
+  .slide.active .need-item:nth-child(5), .slide.active .prereq-item:nth-child(5) { animation-delay: .32s; }
+  .slide.active .team-card { animation: fadeUp .5s both; }
+  .slide.active .team-card:nth-child(2) { animation-delay: .12s; }
+  .slide.active .team-card:nth-child(3) { animation-delay: .24s; }
+
+  /* Fullscreen */
+  :fullscreen #toolbar { position: fixed; }
+  :fullscreen #stage { top: 52px; }
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <div class="brand">Mestergruppen × Sopra Steria</div>
+  <div class="controls">
+    <button id="prev-btn" onclick="changeSlide(-1)">&#8592;</button>
+    <span id="counter">1 / 10</span>
+    <button id="next-btn" onclick="changeSlide(1)">&#8594;</button>
+    <button id="fs-btn" onclick="toggleFS()" title="Fullskjerm">⛶</button>
+  </div>
+</div>
+
+<div id="stage">
+  <div id="slide-frame">
+
+    <!-- SLIDE 1: COVER -->
+    <div class="slide active" id="s1">
+      <div class="s1 s1" style="height:100%">
+        <div class="s1-accent"></div>
+        <div class="s1-bg"></div>
+        <div class="s1-grid"></div>
+        <div class="s1-orb"></div>
+        <div class="s1-logo">sopra steria</div>
+        <div class="s1-content">
+          <div class="s1-tag">Tilbud</div>
+          <div class="s1-title">Claude<br><span>Enterprise</span></div>
+          <div class="s1-subtitle">Oppsett, integrasjon og opplæring</div>
+          <div class="s1-meta">
+            <div class="s1-meta-item">
+              <div class="s1-meta-label">Utarbeidet for</div>
+              <div class="s1-meta-value">Mestergruppen</div>
+            </div>
+            <div class="s1-meta-item">
+              <div class="s1-meta-label">Dato</div>
+              <div class="s1-meta-value">April 2026</div>
+            </div>
+            <div class="s1-meta-item">
+              <div class="s1-meta-label">Utarbeidet av</div>
+              <div class="s1-meta-value">Sopra Steria</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: BEHOV -->
+    <div class="slide" id="s2">
+      <div class="content-slide" style="height:100%">
+        <div class="slide-header">
+          <div class="slide-num">02</div>
+          <div class="slide-title">Din situasjon</div>
+          <div class="slide-sub">Slik vi forstår oppdraget</div>
+        </div>
+        <div class="slide-body">
+          <div class="s2-grid">
+            <div class="s2-left">
+              <div class="s2-text">
+                Mestergruppen har etablert Microsoft 365 Copilot som ett av sine AI-verktøy, med skjerming av personsensitive områder og en trygg grunnkonfigurasjon overlevert til IT Drift.
+              </div>
+              <div class="s2-text">
+                Nå ønsker Mestergruppen å ta i bruk Claude Enterprise som supplement og alternativ til Microsoft 365 Copilot — strukturert, dokumentert og med en klar overlevering til IT Drift ved avslutning.
+              </div>
+            </div>
+            <div class="s2-right">
+              <div class="s2-need-title">Behovet dekker</div>
+              <div class="need-item">
+                <div class="need-icon">🔐</div>
+                <div class="need-text">Integrasjon mot eksisterende Entra ID for automatisk pålogging</div>
+              </div>
+              <div class="need-item">
+                <div class="need-icon">⚙️</div>
+                <div class="need-text">Konfigurasjon av tjenesten og tilgangsstyring mot Microsoft 365 Connector</div>
+              </div>
+              <div class="need-item">
+                <div class="need-icon">🛡️</div>
+                <div class="need-text">Skjerming av personsensitive dataområder med tilsvarende kontroller som i Copilot</div>
+              </div>
+              <div class="need-item">
+                <div class="need-icon">🎓</div>
+                <div class="need-text">Opplæring av nøkkelressurser og identifisering av bruksområder</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: VÅR TILNÆRMING -->
+    <div class="slide" id="s3">
+      <div class="content-slide" style="height:100%">
+        <div class="slide-header">
+          <div class="slide-num">03</div>
+          <div class="slide-title">Vår tilnærming</div>
+          <div class="slide-sub">Fire faser fra design til overlevering</div>
+        </div>
+        <div class="slide-body">
+          <div class="s3-phases">
+            <div class="phase-card">
+              <div class="phase-num">1</div>
+              <div class="phase-badge">Fase 1</div>
+              <div class="phase-name">Kartlegging og design</div>
+              <div class="phase-items">
+                <div class="phase-item">Definere krav til Claude Enterprise i Mestergruppen</div>
+                <div class="phase-item">Kartlegging av tilgangsstruktur og policyer</div>
+                <div class="phase-item">Etablere Cloud Center of Excellence-modell</div>
+              </div>
+            </div>
+            <div class="phase-card">
+              <div class="phase-num">2</div>
+              <div class="phase-badge">Fase 2</div>
+              <div class="phase-name">Teknisk oppsett og integrasjon</div>
+              <div class="phase-items">
+                <div class="phase-item">SSO med Entra ID, tilgangsstyring og rollestyring</div>
+                <div class="phase-item">Microsoft 365 Connector-konfigurasjon</div>
+                <div class="phase-item">Verifisering av skjerming av personsensitive områder</div>
+              </div>
+            </div>
+            <div class="phase-card">
+              <div class="phase-num">3</div>
+              <div class="phase-badge">Fase 3</div>
+              <div class="phase-name">Validering og dokumentasjon</div>
+              <div class="phase-items">
+                <div class="phase-item">Testing mot design og verifisering av skjerming</div>
+                <div class="phase-item">Grunnleggende driftsdokumentasjon</div>
+                <div class="phase-item">Materiell og plan for opplæring og utrulling</div>
+              </div>
+            </div>
+            <div class="phase-card">
+              <div class="phase-num">4</div>
+              <div class="phase-badge">Fase 4</div>
+              <div class="phase-name">Opplæring og overlevering</div>
+              <div class="phase-items">
+                <div class="phase-item">Opplæring av nøkkelressurser</div>
+                <div class="phase-item">Driftsrutiner og Day 2-guide</div>
+                <div class="phase-item">Formell overlevering til tjeneste forvaltning</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: FASE 1 -->
+    <div class="slide" id="s4">
+      <div class="content-slide" style="height:100%">
+        <div class="slide-header">
+          <div class="slide-num">04</div>
+          <div class="slide-title">Fase 1 — Kartlegging og design</div>
+          <div class="slide-sub">Vi definerer kravgrunnlaget sammen med Mestergruppen</div>
+        </div>
+        <div class="slide-body">
+          <div class="fase-body">
+            <div class="fase-desc">
+              <div class="fase-desc-title">Aktiviteter</div>
+              <div class="fase-desc-item">Definere innledende krav til hvordan Claude Enterprise kan benyttes i Mestergruppen</div>
+              <div class="fase-desc-item">Kartlegging av tilgangsstruktur, brukergrupper og tilgangspolicyer</div>
+              <div class="fase-desc-item">Etablere en enkel modell for Cloud Center of Excellence med ansvar for utrullingen</div>
+              <div class="fase-desc-item">Kartlegging av sensitivitetsetiketter og krypteringspolicyer (Microsoft Purview)</div>
+              <div class="fase-desc-item">Identifisere pilotbrukere for Claude Enterprise</div>
+            </div>
+            <div class="fase-deliverables">
+              <div class="fase-del-title">Leveranser fra fase 1</div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Dokumentert og godkjent design</div>
+              </div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Oversikt over skjermingskrav og tilgangsroller</div>
+              </div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Kartlegging av sensitivitetsetiketter og krypteringspolicyer</div>
+              </div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Identifiserte pilotbrukere</div>
+              </div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Avtalt konfigurasjonsprofil for Claude Enterprise</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: FASE 2 -->
+    <div class="slide" id="s5">
+      <div class="content-slide" style="height:100%">
+        <div class="slide-header">
+          <div class="slide-num">05</div>
+          <div class="slide-title">Fase 2 — Teknisk oppsett og integrasjon</div>
+          <div class="slide-sub">Konfigurasjon tilpasset Mestergruppens infrastruktur</div>
+        </div>
+        <div class="slide-body">
+          <div class="fase-body">
+            <div class="fase-desc">
+              <div class="fase-desc-title">Aktiviteter</div>
+              <div class="fase-desc-item">Sikker innlogging med Entra ID, tilgangsstyring og rollebasert kontroll</div>
+              <div class="fase-desc-item">Konfigurasjon av Microsoft 365 Connector i Claude Enterprise</div>
+              <div class="fase-desc-item">Verifisere beskyttelse av personsensitive områder og kryptert innhold (Purview)</div>
+              <div class="fase-desc-item">Etablering av Claude Enterprise-lisenser for pilotgruppe</div>
+            </div>
+            <div class="fase-deliverables">
+              <div class="fase-del-title">Leveranser fra fase 2</div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Lisensiering etablert for pilotbrukere</div>
+              </div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Single Sign-On med Entra ID (Mestergruppen-identitet)</div>
+              </div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Konfigurert tilgangsstyring og brukerroller</div>
+              </div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Skjerming av personsensitive områder aktivert og verifisert</div>
+              </div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Kontrollert tilgjengeliggjøring av M365 Connector</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: FASE 3 -->
+    <div class="slide" id="s6">
+      <div class="content-slide" style="height:100%">
+        <div class="slide-header">
+          <div class="slide-num">06</div>
+          <div class="slide-title">Fase 3 — Validering og dokumentasjon</div>
+          <div class="slide-sub">Vi tester, verifiserer og dokumenterer for IT Drift</div>
+        </div>
+        <div class="slide-body">
+          <div class="fase-body">
+            <div class="fase-desc">
+              <div class="fase-desc-title">Aktiviteter</div>
+              <div class="fase-desc-item">Testing mot kravspesifikasjon og verifisering av skjerming</div>
+              <div class="fase-desc-item">Verifisere at kryptert innhold (Purview-etiketter) blokkeres korrekt</div>
+              <div class="fase-desc-item">Definere "Godkjent bruk av Claude Enterprise" for Mestergruppen</div>
+              <div class="fase-desc-item">Etablere grunnleggende driftsdokumentasjon og forberede opplæringsmateriell</div>
+            </div>
+            <div class="fase-deliverables">
+              <div class="fase-del-title">Leveranser fra fase 3</div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Testrapport med godkjenning mot design</div>
+              </div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Verifisering av blokkering av kryptert innhold</div>
+              </div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Definert "Godkjent bruk" for Mestergruppen</div>
+              </div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Driftsdokumentasjon tilpasset IT Drift</div>
+              </div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Rutiner for tilgangsstyring og vedlikehold</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: FASE 4 -->
+    <div class="slide" id="s7">
+      <div class="content-slide" style="height:100%">
+        <div class="slide-header">
+          <div class="slide-num">07</div>
+          <div class="slide-title">Fase 4 — Opplæring og overlevering</div>
+          <div class="slide-sub">Klar for drift fra dag én</div>
+        </div>
+        <div class="slide-body">
+          <div class="fase-body">
+            <div class="fase-desc">
+              <div class="fase-desc-title">Aktiviteter</div>
+              <div class="fase-desc-item">Opplæring av nøkkelressurser og kommunikasjonsplan til brukere</div>
+              <div class="fase-desc-item">Etablere driftsrutiner og Day 2-guide for tjeneste forvaltning</div>
+              <div class="fase-desc-item">Formell overlevering til tjeneste forvaltning med godkjenning fra oppdragsgiver</div>
+            </div>
+            <div class="fase-deliverables">
+              <div class="fase-del-title">Leveranser fra fase 4</div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Gjennomført opplæring av nøkkelressurser</div>
+              </div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Day 2-guide for tjeneste forvaltning</div>
+              </div>
+              <div class="del-item">
+                <div class="del-check">✓</div>
+                <div class="del-text">Formell overlevering med signert godkjenning fra oppdragsgiver</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: FORUTSETNINGER -->
+    <div class="slide" id="s8">
+      <div class="content-slide" style="height:100%">
+        <div class="slide-header">
+          <div class="slide-num">08</div>
+          <div class="slide-title">Forutsetninger</div>
+          <div class="slide-sub">For at leveransen skal gjennomføres som beskrevet</div>
+        </div>
+        <div class="slide-body">
+          <div class="prereq-list">
+            <div class="prereq-item">
+              <div class="prereq-num">1</div>
+              <div class="prereq-text">Mestergruppen anskaffer Claude Enterprise-abonnement via Anthropics nettside <strong>(claude.ai/enterprise)</strong> før oppstart av Fase 2. Sopra Steria bistår med veiledning i bestillingsprosessen som del av leveransen.</div>
+            </div>
+            <div class="prereq-item">
+              <div class="prereq-num">2</div>
+              <div class="prereq-text">Mestergruppen stiller med nødvendig Entra ID-tilgang og teknisk kontaktperson fra IT Drift gjennom hele prosjektet. Dette gjelder særlig i Fase 1, der kartlegging av struktur og skjermingskrav gjennomføres i samarbeid.</div>
+            </div>
+            <div class="prereq-item">
+              <div class="prereq-num">3</div>
+              <div class="prereq-text">Nøkkelressurser som skal delta i opplæring er identifisert og gjort tilgjengelig i Fase 4.</div>
+            </div>
+            <div class="prereq-item">
+              <div class="prereq-num">4</div>
+              <div class="prereq-text">Funn i Fase 1 som avdekker vesentlig høyere kompleksitet enn forutsatt vil bli håndtert som endring i samråd med oppdragsgiver før Fase 2 igangsettes.</div>
+            </div>
+            <div class="prereq-item">
+              <div class="prereq-num">5</div>
+              <div class="prereq-text">Leveransen gjennomføres på <strong>tid og materiell</strong>. Estimerte timer er veiledende. Eventuell reisetid og kostnader utenfor Oslo faktureres etter regning.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: LISENSIERING -->
+    <div class="slide" id="s9">
+      <div class="content-slide" style="height:100%">
+        <div class="slide-header">
+          <div class="slide-num">09</div>
+          <div class="slide-title">Lisensiering av Claude Enterprise</div>
+          <div class="slide-sub">To veier til abonnement — ulik leveringstid og vilkår</div>
+        </div>
+        <div class="slide-body">
+          <div class="lic-grid">
+            <div class="lic-card featured">
+              <div class="lic-badge">⚡ Anbefalt</div>
+              <div class="lic-title">Selvbetjent bestilling</div>
+              <div>
+                <div class="lic-min">20+</div>
+                <div class="lic-min-label">seter minimum</div>
+              </div>
+              <div class="lic-features">
+                <div class="lic-feature">Tilgang umiddelbart etter betaling</div>
+                <div class="lic-feature">Ingen ventetid — ingen salgsprosess</div>
+                <div class="lic-feature">Betales årlig</div>
+                <div class="lic-feature">Bestilles på claude.ai/enterprise</div>
+              </div>
+              <div class="lic-note">Anbefalt rute dersom Mestergruppen ikke har krav til spesielle kontraktsvilkår. Påvirker ikke prosjektfremdriften.</div>
+            </div>
+            <div class="lic-card">
+              <div class="lic-badge">📋 Alternativ</div>
+              <div class="lic-title">Via Anthropics salgsteam</div>
+              <div>
+                <div class="lic-min" style="color:var(--purple)">50+</div>
+                <div class="lic-min-label">seter minimum</div>
+              </div>
+              <div class="lic-features">
+                <div class="lic-feature">Tilpassede kontraktsvilkår og fakturering</div>
+                <div class="lic-feature">Særskilte krav og HIPAA-tilbud</div>
+                <div class="lic-feature">Leveringstid: noen dager til et par uker</div>
+                <div class="lic-feature">Forhandlinger og interne godkjenninger</div>
+              </div>
+              <div class="lic-note">Bør igangsettes tidlig i prosjektet for å unngå forsinkelse før Fase 2.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: TEAM -->
+    <div class="slide" id="s10">
+      <div class="content-slide" style="height:100%">
+        <div class="slide-header">
+          <div class="slide-num">10</div>
+          <div class="slide-title">Vårt team</div>
+          <div class="slide-sub">Konsulenter dedikert til leveransen</div>
+        </div>
+        <div class="slide-body">
+          <div class="team-grid">
+            <div class="team-card">
+              <div class="team-card-header">
+                <div class="team-avatar">AE</div>
+                <div class="team-name">Anders Eide</div>
+                <div class="team-role">Entra ID &amp; teknisk integrasjon</div>
+              </div>
+              <div class="team-card-body">
+                <div class="team-bio">Anders har 15 års erfaring med Microsoft-teknologistakken og har designet og implementert Azure AD-løsninger, SSO-integrasjoner og tilgangsstyring for en rekke kunder. Microsoft MVP innen Azure siden 2015, med erfaring fra Gassco, CEPI og Oslo kommune.</div>
+              </div>
+            </div>
+            <div class="team-card">
+              <div class="team-card-header">
+                <div class="team-avatar">WH</div>
+                <div class="team-name">Wilhelm Hartvig</div>
+                <div class="team-role">Delivery Lead &amp; adopsjon</div>
+              </div>
+              <div class="team-card-body">
+                <div class="team-bio">Wilhelm er Sopra Sterias AI-ansvarlig og har ledet innføring av generative AI-verktøy, inkludert M365 Copilot, i store og komplekse organisasjoner. Bred erfaring med opplæring, workshopfasilitering og AI governance, bl.a. som rådgiver for Forsvaret.</div>
+              </div>
+            </div>
+            <div class="team-card">
+              <div class="team-card-header">
+                <div class="team-avatar">LT</div>
+                <div class="team-name">Linda Torp</div>
+                <div class="team-role">Governance &amp; Purview</div>
+              </div>
+              <div class="team-card-body">
+                <div class="team-bio">Linda er spesialist innen Microsoft Purview, compliance og informasjonsbeskyttelse. Direkte erfaring fra sensitivitetsetiketter, DLP-policyer og Copilot Memory-vurderinger hos Vår Energi. Sertifisert innen Identity and Access og Information Protection.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /slide-frame -->
+</div><!-- /stage -->
+
+<div id="dots"></div>
+
+<div id="progress"><div id="progress-fill"></div></div>
+
+<script>
+  const TOTAL = 10;
+  let current = 0;
+
+  // Scale slide frame to fit viewport
+  function scaleFrame() {
+    const stageW = window.innerWidth;
+    const stageH = window.innerHeight - 52;
+    const slideW = 1280, slideH = 720;
+    const scale = Math.min(stageW / slideW, stageH / slideH) * 0.96;
+    document.getElementById('slide-frame').style.transform = `scale(${scale})`;
+  }
+  window.addEventListener('resize', scaleFrame);
+  scaleFrame();
+
+  // Build dots
+  const dotsEl = document.getElementById('dots');
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  }
+
+  function goTo(idx) {
+    const slides = document.querySelectorAll('.slide');
+    slides[current].classList.remove('active');
+    slides[current].classList.add('prev');
+    setTimeout(() => slides[current].classList.remove('prev'), 500);
+
+    current = (idx + TOTAL) % TOTAL;
+    slides[current].classList.add('active');
+
+    document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i === current));
+    document.getElementById('counter').textContent = `${current + 1} / ${TOTAL}`;
+    document.getElementById('progress-fill').style.width = `${((current + 1) / TOTAL) * 100}%`;
+  }
+
+  function changeSlide(dir) { goTo(current + dir); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+    if (e.key === 'ArrowLeft') changeSlide(-1);
+    if (e.key === 'f' || e.key === 'F') toggleFS();
+  });
+
+  function toggleFS() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+
+  // Init progress
+  document.getElementById('progress-fill').style.width = `${(1 / TOTAL) * 100}%`;
+</script>
+</body>
+</html>
