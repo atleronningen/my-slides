@@ -1,1 +1,1131 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lyse — Innføring og operasjonalisering av Claude Enterprise</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css"/>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
 
+  :root {
+    --ss-dark-purple: #4D1D82;
+    --ss-light-purple: #8B1D82;
+    --ss-red: #CF022B;
+    --ss-orange: #EF7D00;
+    --ss-off-black: #1D1D1B;
+    --ss-white: #FFFFFF;
+    --ss-light-grey: #EDEDED;
+    --ss-bg-purple: #EDE9F2;
+    --ss-gradient: linear-gradient(135deg, #4D1D82 0%, #CF022B 60%, #EF7D00 100%);
+    --ss-font-body: 'DM Sans', Tahoma, Arial, sans-serif;
+    --ss-font-heading: 'DM Sans', Tahoma, Arial, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: var(--ss-font-body);
+    overflow: hidden;
+  }
+
+  .swiper-outer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 10px 0 60px;
+  }
+
+  .slide-stage {
+    position: relative;
+    width: 100%;
+    max-width: calc((100vh - 120px) * 16 / 9);
+    aspect-ratio: 16 / 9;
+    max-height: calc(100vh - 120px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    overflow: hidden;
+    border-radius: 4px;
+  }
+
+  .swiper { width: 100%; height: 100%; }
+
+  /* Slide backgrounds */
+  .swiper-slide {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .slide-gradient {
+    background: linear-gradient(135deg, #4D1D82 0%, #7B1060 40%, #CF022B 70%, #EF7D00 100%);
+    color: #fff;
+  }
+  .slide-white {
+    background: #fff;
+    color: var(--ss-off-black);
+  }
+  .slide-darkpurple {
+    background: linear-gradient(135deg, #2a0a50 0%, #4D1D82 100%);
+    color: #fff;
+  }
+
+  /* Geo orbs */
+  .slide-geo {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .geo-orb {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.18;
+    filter: blur(60px);
+    animation: floatOrb 12s ease-in-out infinite alternate;
+  }
+  @keyframes floatOrb {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(20px,-20px) scale(1.07); }
+  }
+
+  /* Slide inner */
+  .slide-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 5vw, 4rem) clamp(1rem, 2vw, 2rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: clamp(0.4rem, 1.2vw, 0.9rem);
+  }
+
+  /* Logo */
+  .slide-logo {
+    position: absolute;
+    top: clamp(0.7rem, 2vw, 1.2rem);
+    right: clamp(1rem, 3vw, 2rem);
+    height: clamp(22px, 3.5vw, 38px);
+    z-index: 10;
+    object-fit: contain;
+  }
+  .slide-white .slide-logo { filter: none; }
+  .slide-gradient .slide-logo,
+  .slide-darkpurple .slide-logo { filter: brightness(0) invert(1); }
+
+  /* Gradient top bar (white slides) */
+  .slide-white::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #4D1D82 0%, #CF022B 60%, #EF7D00 100%);
+    z-index: 3;
+  }
+
+  /* Typography */
+  .slide-num {
+    font-size: clamp(0.55rem, 1.1vw, 0.75rem);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+  .slide-eyebrow {
+    font-size: clamp(0.6rem, 1.1vw, 0.78rem);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ss-orange);
+  }
+  .slide-gradient .slide-eyebrow { color: rgba(255,255,255,0.75); }
+  .slide-darkpurple .slide-eyebrow { color: var(--ss-orange); }
+
+  .slide-title {
+    font-size: clamp(1.3rem, 3.5vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: inherit;
+  }
+  .slide-white .slide-title { color: var(--ss-dark-purple); }
+
+  .slide-subtitle {
+    font-size: clamp(0.85rem, 1.7vw, 1.15rem);
+    line-height: 1.55;
+    opacity: 0.88;
+    max-width: 75%;
+  }
+
+  .slide-body { margin-top: clamp(0.3rem, 1vw, 0.7rem); }
+
+  /* Cards */
+  .card-grid {
+    display: grid;
+    gap: clamp(0.5rem, 1.2vw, 0.9rem);
+  }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .grid-5 { grid-template-columns: repeat(5, 1fr); }
+
+  .ss-card {
+    background: rgba(255,255,255,0.07);
+    border-left: 3px solid var(--ss-dark-purple);
+    border-radius: 6px;
+    padding: clamp(0.6rem, 1.5vw, 1rem);
+  }
+  .ss-card.on-white {
+    background: var(--ss-bg-purple);
+    border-left: 3px solid var(--ss-dark-purple);
+  }
+  .ss-card-orange { border-left-color: var(--ss-orange); }
+  .ss-card-red    { border-left-color: var(--ss-red); }
+
+  .ss-card-label {
+    font-size: clamp(0.5rem, 0.9vw, 0.65rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+    margin-bottom: 0.25em;
+  }
+  .ss-card h3 {
+    font-size: clamp(0.85rem, 1.5vw, 1.05rem);
+    font-weight: 700;
+    margin-bottom: 0.3em;
+    color: inherit;
+  }
+  .ss-card.on-white h3 { color: var(--ss-dark-purple); }
+  .ss-card p {
+    font-size: clamp(0.75rem, 1.35vw, 0.95rem);
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+
+  /* Phase grid */
+  .phase-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(0.5rem, 1.2vw, 0.9rem);
+  }
+  .phase-card {
+    background: rgba(255,255,255,0.09);
+    border-radius: 8px;
+    padding: clamp(0.6rem, 1.5vw, 1rem);
+    border-top: 3px solid var(--ss-orange);
+  }
+  .phase-num {
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: 800;
+    color: var(--ss-orange);
+    line-height: 1;
+    margin-bottom: 0.2em;
+  }
+  .phase-name {
+    font-size: clamp(0.85rem, 1.5vw, 1.05rem);
+    font-weight: 700;
+    margin-bottom: 0.3em;
+  }
+  .phase-period {
+    font-size: clamp(0.55rem, 0.95vw, 0.7rem);
+    opacity: 0.65;
+    font-weight: 500;
+    margin-bottom: 0.4em;
+    letter-spacing: 0.05em;
+  }
+  .phase-desc {
+    font-size: clamp(0.72rem, 1.2vw, 0.88rem);
+    line-height: 1.5;
+    opacity: 0.82;
+  }
+
+  /* Feature list */
+  .feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.35rem, 0.9vw, 0.6rem);
+  }
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6em;
+    font-size: clamp(0.8rem, 1.55vw, 1.05rem);
+    line-height: 1.5;
+  }
+  .feature-dot {
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ss-orange);
+    margin-top: 0.45em;
+  }
+  .feature-dot.red { background: var(--ss-red); }
+  .feature-dot.purple { background: var(--ss-light-purple); }
+
+  /* Two-column layout */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1rem, 2.5vw, 2rem);
+    align-items: start;
+  }
+
+  /* Team grid */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: clamp(0.4rem, 1vw, 0.7rem);
+  }
+  .team-card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: clamp(0.6rem, 1.3vw, 0.9rem);
+    border-bottom: 3px solid var(--ss-orange);
+  }
+  .team-role {
+    font-size: clamp(0.52rem, 0.9vw, 0.65rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ss-orange);
+    margin-bottom: 0.35em;
+  }
+  .team-name {
+    font-size: clamp(0.78rem, 1.25vw, 0.95rem);
+    font-weight: 700;
+    margin-bottom: 0.3em;
+    line-height: 1.2;
+  }
+  .team-load {
+    font-size: clamp(0.52rem, 0.9vw, 0.65rem);
+    opacity: 0.65;
+  }
+  .team-bio {
+    font-size: clamp(0.68rem, 1.15vw, 0.82rem);
+    line-height: 1.5;
+    opacity: 0.82;
+    margin-top: 0.4em;
+  }
+
+  /* Title block */
+  .title-block { display: flex; flex-direction: column; gap: clamp(0.5rem, 1.2vw, 0.9rem); }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: clamp(0.6rem, 1.1vw, 0.78rem);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.15);
+    padding: 0.3em 0.8em;
+    border-radius: 20px;
+    width: fit-content;
+  }
+  .hero-tag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ss-orange); }
+  .title-meta {
+    display: flex;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    margin-top: clamp(0.3rem, 1vw, 0.8rem);
+    padding-top: clamp(0.5rem, 1.2vw, 1rem);
+    border-top: 1px solid rgba(255,255,255,0.2);
+  }
+  .title-meta-label {
+    font-size: clamp(0.5rem, 0.9vw, 0.65rem);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.55;
+    margin-bottom: 0.2em;
+  }
+  .title-meta-value {
+    font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+    font-weight: 600;
+  }
+
+  /* Divider */
+  .section-divider {
+    width: 40px;
+    height: 3px;
+    background: var(--ss-orange);
+    border-radius: 2px;
+  }
+
+  /* Closing slide */
+  .closing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(0.8rem, 2vw, 1.5rem);
+    margin-top: clamp(0.3rem, 1vw, 0.7rem);
+  }
+  .closing-card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: clamp(0.6rem, 1.3vw, 1rem);
+    border-left: 3px solid var(--ss-orange);
+  }
+  .closing-card h4 {
+    font-size: clamp(0.62rem, 1.1vw, 0.78rem);
+    font-weight: 700;
+    margin-bottom: 0.3em;
+    color: var(--ss-orange);
+  }
+  .closing-card p {
+    font-size: clamp(0.58rem, 0.98vw, 0.7rem);
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+
+  /* Ref card */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: clamp(0.5rem, 1.2vw, 0.9rem);
+  }
+  .ref-card {
+    background: var(--ss-bg-purple);
+    border-radius: 8px;
+    padding: clamp(0.6rem, 1.5vw, 1rem);
+    border-top: 3px solid var(--ss-dark-purple);
+  }
+  .ref-customer {
+    font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+    font-weight: 700;
+    color: var(--ss-dark-purple);
+    margin-bottom: 0.15em;
+  }
+  .ref-sector {
+    font-size: clamp(0.52rem, 0.9vw, 0.65rem);
+    color: var(--ss-red);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5em;
+  }
+  .ref-label {
+    font-size: clamp(0.52rem, 0.88vw, 0.63rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ss-off-black);
+    opacity: 0.55;
+    margin-top: 0.4em;
+    margin-bottom: 0.15em;
+  }
+  .ref-text {
+    font-size: clamp(0.58rem, 1vw, 0.72rem);
+    line-height: 1.5;
+    color: var(--ss-off-black);
+    opacity: 0.85;
+  }
+
+  /* Next steps table */
+  .steps-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(0.78rem, 1.35vw, 0.95rem);
+  }
+  .steps-table th {
+    text-align: left;
+    padding: 0.4em 0.8em;
+    font-size: clamp(0.5rem, 0.9vw, 0.65rem);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.55;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  .steps-table td {
+    padding: clamp(0.4rem, 0.9vw, 0.65rem) 0.8em;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    line-height: 1.4;
+    vertical-align: top;
+  }
+  .steps-table tr:last-child td { border-bottom: none; }
+  .step-num {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    font-weight: 800;
+    color: var(--ss-orange);
+    line-height: 1;
+  }
+  .steps-table .ansvar-2s { color: var(--ss-orange); font-weight: 600; }
+  .steps-table .ansvar-lyse { color: rgba(255,255,255,0.65); }
+  .steps-table .ansvar-begge { color: rgba(255,255,255,0.85); }
+
+  /* Kommersielt table */
+  .komm-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(0.58rem, 1.05vw, 0.75rem);
+  }
+  .komm-table th {
+    text-align: left;
+    padding: 0.4em 0.7em;
+    font-size: clamp(0.5rem, 0.85vw, 0.62rem);
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    opacity: 0.55;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+  .komm-table th.right { text-align: right; }
+  .komm-table td {
+    padding: clamp(0.35rem, 0.8vw, 0.55rem) 0.7em;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    vertical-align: middle;
+  }
+  .komm-table td.right { text-align: right; opacity: 0.5; font-style: italic; }
+  .komm-table tr.total-row td {
+    border-top: 1px solid rgba(255,255,255,0.3);
+    font-weight: 700;
+    color: var(--ss-orange);
+    border-bottom: none;
+  }
+  .komm-table tr.total-row td.right { color: var(--ss-orange); opacity: 1; font-style: normal; }
+  .load-badge {
+    display: inline-block;
+    padding: 0.15em 0.5em;
+    border-radius: 10px;
+    font-size: clamp(0.48rem, 0.82vw, 0.6rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .load-high { background: rgba(239,125,0,0.25); color: var(--ss-orange); }
+  .load-mid  { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.75); }
+
+  .betingelser {
+    margin-top: clamp(0.4rem, 1vw, 0.7rem);
+    padding: clamp(0.4rem, 1vw, 0.7rem) clamp(0.6rem, 1.5vw, 1rem);
+    background: rgba(255,255,255,0.06);
+    border-radius: 6px;
+    display: flex;
+    gap: clamp(0.8rem, 2vw, 1.5rem);
+    flex-wrap: wrap;
+  }
+  .bet-item {
+    font-size: clamp(0.52rem, 0.92vw, 0.66rem);
+    opacity: 0.8;
+    line-height: 1.4;
+  }
+  .bet-item strong { color: var(--ss-orange); display: block; margin-bottom: 0.1em; }
+
+  /* PPT Toolbar */
+  .slider-footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 50px;
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+  }
+  .slider-progress {
+    position: fixed;
+    bottom: 50px; left: 0; right: 0;
+    height: 3px;
+    background: #2a2a2a;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4D1D82 0%, #CF022B 60%, #EF7D00 100%);
+    transition: width 0.3s ease;
+  }
+  .ppt-controls { display: flex; align-items: center; gap: 8px; }
+  .ppt-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #aaa;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--ss-font-body);
+    font-size: 12px;
+    transition: all 0.15s;
+  }
+  .ppt-btn:hover { color: #fff; border-color: #fff; }
+  .ppt-btn.active { background: rgba(139,29,130,0.4); color: #fff; border-color: var(--ss-light-purple); }
+  .slide-counter { color: #aaa; font-size: 13px; font-family: var(--ss-font-body); min-width: 60px; text-align: center; }
+  .thumb-strip { display: flex; align-items: center; gap: 5px; }
+  .thumb-item {
+    width: 24px; height: 4px;
+    background: #3a3a3a;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .thumb-item.active {
+    background: linear-gradient(90deg, #4D1D82, #CF022B);
+    width: 32px;
+  }
+  .thumb-item:hover { background: #666; }
+
+  :fullscreen .slider-footer,
+  :fullscreen .slider-progress { display: none; }
+  :fullscreen body { overflow: hidden; }
+  :fullscreen .swiper-outer { padding: 0; }
+  :fullscreen .slide-stage { max-width: calc(100vh * 16 / 9); max-height: 100vh; border-radius: 0; }
+
+  @media (max-width: 1024px) {
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .phase-grid { grid-template-columns: 1fr 1fr; }
+    .team-grid { grid-template-columns: repeat(3, 1fr); }
+    .ref-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    .two-col { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .closing-grid { grid-template-columns: 1fr; }
+    .thumb-strip { display: none; }
+  }
+  @media (max-width: 480px) {
+    .thumb-strip, .ppt-btn:not(.nav-btn) { display: none; }
+    .team-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="swiper-outer">
+  <div class="slide-stage">
+    <div class="swiper">
+      <div class="swiper-wrapper">
+
+        <!-- SLIDE 1: Cover — gradient -->
+        <div class="swiper-slide slide-gradient">
+          <div class="slide-geo">
+            <div class="geo-orb" style="width:500px;height:500px;background:#EF7D00;top:-150px;right:-100px;"></div>
+            <div class="geo-orb" style="width:350px;height:350px;background:#CF022B;bottom:-80px;left:20%;animation-delay:-6s;opacity:0.15;"></div>
+          </div>
+          <div class="slide-inner">
+            <span class="slide-num">01 / 12</span>
+            <div class="title-block">
+              <div class="hero-tag"><span class="hero-tag-dot"></span>Tilbud til Lyse</div>
+              <h1 class="slide-title" style="font-size:clamp(1.6rem,4.5vw,3.2rem);">Innføring og<br>operasjonalisering<br>av Claude Enterprise</h1>
+              <p class="slide-subtitle">Et tverrfaglig team fra Sopra Steria hjelper Lyse med å skalere AI-bruk trygt, strukturert og bærekraftig.</p>
+              <div class="title-meta">
+                <div class="title-meta-item">
+                  <div class="title-meta-label">Utarbeidet av</div>
+                  <div class="title-meta-value">Sopra Steria</div>
+                </div>
+                <div class="title-meta-item">
+                  <div class="title-meta-label">Dato</div>
+                  <div class="title-meta-value">Mai 2026</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 2: Bakgrunn — white -->
+        <div class="swiper-slide slide-white">
+          <div class="slide-inner">
+            <span class="slide-num">02 / 12</span>
+            <span class="slide-eyebrow">Kontekst</span>
+            <h2 class="slide-title">Bakgrunn</h2>
+            <div class="section-divider"></div>
+            <p class="slide-subtitle" style="max-width:85%;">Lyse har tatt de første skrittene med Claude Enterprise.</p>
+            <div class="slide-body">
+              <div class="card-grid grid-2" style="margin-top:0.2rem;">
+                <div class="ss-card on-white">
+                  <div class="ss-card-label">Piloterfaring</div>
+                  <h3>Pilot gjennomført</h3>
+                  <p>Lyse har gjennomført en pilot med Claude Enterprise for 150 brukere, fordelt på tekniske og ikke-tekniske roller.</p>
+                </div>
+                <div class="ss-card on-white ss-card-orange">
+                  <div class="ss-card-label">Gap identifisert</div>
+                  <h3>Behov for struktur</h3>
+                  <p>Piloten har gitt verdifull erfaring, men avdekket behov: governance, sikkerhet, opplæring og forvaltning er ikke på plass for full utrulling.</p>
+                </div>
+                <div class="ss-card on-white ss-card-red">
+                  <div class="ss-card-label">Oppdrag</div>
+                  <h3>Ekstern kompetanse</h3>
+                  <p>IT-organisasjonen har fått i oppdrag fra forretningen å hente ekstern kompetanse for å operasjonalisere og skalere.</p>
+                </div>
+                <div class="ss-card on-white">
+                  <div class="ss-card-label">Teknisk kontekst</div>
+                  <h3>Samspill og forvaltning</h3>
+                  <p>Samspillet med Microsoft 365 og GitHub Copilot må avklares. Målet er effektiv, trygg og bærekraftig bruk med et forvaltningsopplegg som kan videreføres.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 3: Vår tilnærming — darkpurple -->
+        <div class="swiper-slide slide-darkpurple">
+          <div class="slide-geo">
+            <div class="geo-orb" style="width:400px;height:400px;background:#8B1D82;top:-80px;right:-60px;animation-delay:-3s;"></div>
+            <div class="geo-orb" style="width:280px;height:280px;background:#EF7D00;bottom:-60px;left:30%;animation-delay:-8s;opacity:0.12;"></div>
+          </div>
+          <div class="slide-inner">
+            <span class="slide-num">03 / 12</span>
+            <span class="slide-eyebrow">Metodikk</span>
+            <h2 class="slide-title">Vår tilnærming</h2>
+            <p class="slide-subtitle">Fire faser fra strukturering til overlevering, over en periode på tre måneder.</p>
+            <div class="slide-body">
+              <div class="phase-grid">
+                <div class="phase-card">
+                  <div class="phase-num">01</div>
+                  <div class="phase-name">Oppstart</div>
+                  <div class="phase-period">Uke 1–2</div>
+                  <div class="phase-desc">Situasjonsbilde, gap-analyse og prioritering</div>
+                </div>
+                <div class="phase-card">
+                  <div class="phase-num">02</div>
+                  <div class="phase-name">Design</div>
+                  <div class="phase-period">Uke 2–5</div>
+                  <div class="phase-desc">Governance, retningslinjer, teknisk tilrettelegging og opplæringsmateriell</div>
+                </div>
+                <div class="phase-card">
+                  <div class="phase-num">03</div>
+                  <div class="phase-name">Etablering</div>
+                  <div class="phase-period">Uke 5–10</div>
+                  <div class="phase-desc">Utrulling til brukergrupper, opplæring og kontrollert skalering</div>
+                </div>
+                <div class="phase-card">
+                  <div class="phase-num">04</div>
+                  <div class="phase-name">Overlevering</div>
+                  <div class="phase-period">Uke 10–12</div>
+                  <div class="phase-desc">Dokumentasjon, handover, evaluering og videre forvaltning</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 4: Oppstart — white -->
+        <div class="swiper-slide slide-white">
+          <div class="slide-inner">
+            <span class="slide-num">04 / 12</span>
+            <span class="slide-eyebrow">Fase 1 / Uke 1–2</span>
+            <h2 class="slide-title">Oppstart</h2>
+            <div class="section-divider"></div>
+            <p class="slide-subtitle">Vi etablerer et felles situasjonsbilde og legger grunnlaget for resten av prosjektet.</p>
+            <div class="slide-body">
+              <div class="feature-list">
+                <div class="feature-item"><div class="feature-dot"></div><span>Kickoff med Lyse: forankring av mål, roller og arbeidsform</span></div>
+                <div class="feature-item"><div class="feature-dot red"></div><span>Gjennomgang av piloterfaring: hva fungerer, hva mangler, hva er risiko</span></div>
+                <div class="feature-item"><div class="feature-dot purple"></div><span>Interessentavklaring: hvem påvirkes, hvem bestemmer, hvem må involveres</span></div>
+                <div class="feature-item"><div class="feature-dot"></div><span>Oppstart av sikkerhet- og personverngjennomgang</span></div>
+                <div class="feature-item" style="margin-top:0.3em;padding-top:0.5em;border-top:1px solid var(--ss-bg-purple);">
+                  <div class="feature-dot" style="background:var(--ss-dark-purple);"></div>
+                  <span><strong style="color:var(--ss-dark-purple);">Leveranser:</strong> felles situasjonsbilde, prioritert arbeidsplan og bekreftet prosjektmandat</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 5: Design — gradient -->
+        <div class="swiper-slide slide-gradient">
+          <div class="slide-geo">
+            <div class="geo-orb" style="width:380px;height:380px;background:#4D1D82;bottom:-80px;right:-60px;animation-delay:-4s;"></div>
+            <div class="geo-orb" style="width:260px;height:260px;background:#EF7D00;top:-50px;left:40%;animation-delay:-9s;opacity:0.2;"></div>
+          </div>
+          <div class="slide-inner">
+            <span class="slide-num">05 / 12</span>
+            <span class="slide-eyebrow">Fase 2 / Uke 2–5</span>
+            <h2 class="slide-title">Design</h2>
+            <p class="slide-subtitle">Vi utformer rammeverket som gjør trygg og effektiv bruk av Claude mulig for Lyse.</p>
+            <div class="slide-body">
+              <div class="feature-list">
+                <div class="feature-item"><div class="feature-dot"></div><span>Utforming av governance-modell: retningslinjer, roller, ansvar og eskalering</span></div>
+                <div class="feature-item"><div class="feature-dot"></div><span>Gjennomføring av sikkerhet-, personvern- og regelverksgjennomgang</span></div>
+                <div class="feature-item"><div class="feature-dot"></div><span>Teknisk tilrettelegging for Claude Code-miljøer: krav til arbeidspraksis og kontroll før bredding</span></div>
+                <div class="feature-item"><div class="feature-dot"></div><span>Avklaring av samspill mellom Claude, Microsoft 365 og GitHub Copilot</span></div>
+                <div class="feature-item"><div class="feature-dot"></div><span>Utvikling av opplærings- og informasjonsmateriell for trygg og effektiv bruk</span></div>
+                <div class="feature-item" style="margin-top:0.3em;padding-top:0.5em;border-top:1px solid rgba(255,255,255,0.2);">
+                  <div class="feature-dot" style="background:#fff;"></div>
+                  <span><strong>Leveranser:</strong> godkjente rammeverk, retningslinjer og materiell klart for utrulling</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 6: Etablering — white -->
+        <div class="swiper-slide slide-white">
+          <div class="slide-inner">
+            <span class="slide-num">06 / 12</span>
+            <span class="slide-eyebrow">Fase 3 / Uke 5–10</span>
+            <h2 class="slide-title">Etablering</h2>
+            <div class="section-divider"></div>
+            <p class="slide-subtitle">Vi ruller ut Claude til alle brukergrupper på en kontrollert og strukturert måte.</p>
+            <div class="slide-body">
+              <div class="feature-list">
+                <div class="feature-item"><div class="feature-dot"></div><span>Trinnvis utrulling til prioriterte brukergrupper, Claude Chat og Claude Code separat</span></div>
+                <div class="feature-item"><div class="feature-dot red"></div><span>Opplæring gjennomføres parallelt med utrulling</span></div>
+                <div class="feature-item"><div class="feature-dot purple"></div><span>Løpende oppfølging og justering basert på tilbakemeldinger underveis</span></div>
+                <div class="feature-item"><div class="feature-dot"></div><span>Kontrollpunkter før bredding sikrer at krav til teknisk tilrettelegging og arbeidspraksis er oppfylt</span></div>
+                <div class="feature-item" style="margin-top:0.3em;padding-top:0.5em;border-top:1px solid var(--ss-bg-purple);">
+                  <div class="feature-dot" style="background:var(--ss-dark-purple);"></div>
+                  <span><strong style="color:var(--ss-dark-purple);">Leveranser:</strong> Claude Chat og Claude Code i aktiv bruk hos alle 150 brukere</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 7: Overlevering — darkpurple -->
+        <div class="swiper-slide slide-darkpurple">
+          <div class="slide-geo">
+            <div class="geo-orb" style="width:420px;height:420px;background:#CF022B;top:-100px;right:-80px;animation-delay:-2s;opacity:0.15;"></div>
+            <div class="geo-orb" style="width:300px;height:300px;background:#EF7D00;bottom:-70px;left:25%;animation-delay:-7s;opacity:0.12;"></div>
+          </div>
+          <div class="slide-inner">
+            <span class="slide-num">07 / 12</span>
+            <span class="slide-eyebrow">Fase 4 / Uke 10–12</span>
+            <h2 class="slide-title">Overlevering</h2>
+            <p class="slide-subtitle">Vi sikrer en ryddig overgang til varig forvaltning i Lyses egen organisasjon.</p>
+            <div class="slide-body">
+              <div class="feature-list">
+                <div class="feature-item"><div class="feature-dot"></div><span>Ferdigstilling og dokumentasjon av forvaltningsrutiner for Claude Enterprise</span></div>
+                <div class="feature-item"><div class="feature-dot"></div><span>Forslag til målbilde for videre forvaltning, inkludert vurdering av tjenesteleveranse fra underleverandør</span></div>
+                <div class="feature-item"><div class="feature-dot"></div><span>Overlevering til driftsorganisasjon</span></div>
+                <div class="feature-item"><div class="feature-dot"></div><span>Evaluering av prosjekt og beslutning om videre samarbeid</span></div>
+                <div class="feature-item"><div class="feature-dot"></div><span>Løpende forvaltning av Claude Enterprise vurderes innlemmet i eksisterende driftsavtale mellom Lyse og Sopra Steria</span></div>
+                <div class="feature-item" style="margin-top:0.3em;padding-top:0.5em;border-top:1px solid rgba(255,255,255,0.2);">
+                  <div class="feature-dot" style="background:#fff;"></div>
+                  <span><strong>Leveranser:</strong> ferdig handover-pakke, forvaltningsmodell og innstilling til videre avtale</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 8: Teamet — gradient -->
+        <div class="swiper-slide slide-gradient">
+          <div class="slide-geo">
+            <div class="geo-orb" style="width:350px;height:350px;background:#8B1D82;top:-80px;left:-60px;animation-delay:-5s;"></div>
+            <div class="geo-orb" style="width:280px;height:280px;background:#EF7D00;bottom:-60px;right:20%;animation-delay:-10s;opacity:0.15;"></div>
+          </div>
+          <div class="slide-inner">
+            <span class="slide-num">08 / 12</span>
+            <span class="slide-eyebrow">Ressurser</span>
+            <h2 class="slide-title">Teamet vi stiller med</h2>
+            <p class="slide-subtitle">Et tverrfaglig team med kompetanse på AI, governance, teknisk implementering og brukeradopsjon.</p>
+            <div class="slide-body">
+              <div class="team-grid">
+                <div class="team-card">
+                  <div class="team-role">Prosjektledelse</div>
+                  <div class="team-name">Leveranseansvarlig og adopsjon</div>
+                  <div class="team-load"><span class="load-badge load-high">Høy belastning</span></div>
+                  <p class="team-bio">Overordnet leveranseansvar, kundekontakt, fremdrift, opplæringsmateriell, kommunikasjon og brukeradopsjon</p>
+                </div>
+                <div class="team-card">
+                  <div class="team-role">Kunstig intelligens</div>
+                  <div class="team-name">AI-rådgiver</div>
+                  <div class="team-load"><span class="load-badge load-high">Høy belastning</span></div>
+                  <p class="team-bio">Retningslinjer, bruksscenarier og opplæring av brukere</p>
+                </div>
+                <div class="team-card">
+                  <div class="team-role">Regelverk og risiko</div>
+                  <div class="team-name">Governance</div>
+                  <div class="team-load"><span class="load-badge load-mid">Middels belastning</span></div>
+                  <p class="team-bio">Sikkerhet, personvern og regelverksvurdering</p>
+                </div>
+                <div class="team-card">
+                  <div class="team-role">Utvikling</div>
+                  <div class="team-name">Teknisk konsulent (Claude Code)</div>
+                  <div class="team-load"><span class="load-badge load-mid">Middels belastning</span></div>
+                  <p class="team-bio">Teknisk tilrettelegging, utviklermiljøer og integrasjoner</p>
+                </div>
+                <div class="team-card">
+                  <div class="team-role">Identitet og integrasjon</div>
+                  <div class="team-name">Entra ID og teknisk integrasjon</div>
+                  <div class="team-load"><span class="load-badge load-mid">Middels belastning</span></div>
+                  <p class="team-bio">Identitet, tilgangsstyring og teknisk integrasjon mot eksisterende systemer</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 9: Samspill — white -->
+        <div class="swiper-slide slide-white">
+          <div class="slide-inner">
+            <span class="slide-num">09 / 12</span>
+            <span class="slide-eyebrow">Teknisk kontekst</span>
+            <h2 class="slide-title">Samspill med eksisterende verktøy</h2>
+            <div class="section-divider"></div>
+            <p class="slide-subtitle">Claude Enterprise skal fungere sammen med eksisterende arkitektur og verktøy.</p>
+            <div class="slide-body">
+              <div class="card-grid grid-2" style="margin-top:0.2rem;">
+                <div>
+                  <div class="ss-card on-white" style="margin-bottom:0.6rem;">
+                    <div class="ss-card-label">Microsoft 365</div>
+                    <h3>Microsoft 365 og Copilot</h3>
+                    <p>Avklaring av overlapp og komplementaritet mellom Claude og Microsoft 365 Copilot. Retningslinjer for når man bruker hva, og hvordan verktøyene utfyller hverandre. Teknisk integrasjon og tilgangsstyring via Entra ID.</p>
+                  </div>
+                </div>
+                <div>
+                  <div class="ss-card on-white ss-card-orange" style="margin-bottom:0.6rem;">
+                    <div class="ss-card-label">GitHub</div>
+                    <h3>GitHub Copilot</h3>
+                    <p>Avklaring av rollefordeling mellom Claude Code og GitHub Copilot for utviklere. Retningslinjer for kombinert bruk i utviklingsmiljøer. Sikring av at arbeidspraksis og kontrollpunkter dekker begge verktøy.</p>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top:0.5rem;padding:0.6rem 0.9rem;background:var(--ss-bg-purple);border-radius:6px;border-left:3px solid var(--ss-dark-purple);">
+                <p style="font-size:clamp(0.6rem,1.1vw,0.78rem);color:var(--ss-dark-purple);font-weight:600;">Prinsipp: Lyse skal ha én tydelig verktøystrategi, ikke tre parallelle AI-initiativ uten koordinering.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 10: Referanser — darkpurple -->
+        <div class="swiper-slide slide-darkpurple">
+          <div class="slide-geo">
+            <div class="geo-orb" style="width:400px;height:400px;background:#CF022B;bottom:-100px;right:-80px;animation-delay:-3s;opacity:0.12;"></div>
+          </div>
+          <div class="slide-inner">
+            <span class="slide-num">10 / 12</span>
+            <span class="slide-eyebrow">Erfaring</span>
+            <h2 class="slide-title">Referanser</h2>
+            <p class="slide-subtitle">Vi har erfaring fra tilsvarende leveranser innen AI-innføring, Microsoft-plattformer og store brukerutrullinger.</p>
+            <div class="slide-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:clamp(0.5rem,1.2vw,0.9rem);">
+                <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:clamp(0.6rem,1.4vw,1rem);border-top:3px solid var(--ss-orange);">
+                  <div style="font-size:clamp(0.65rem,1.2vw,0.85rem);font-weight:700;margin-bottom:0.15em;">[Kundenavn]</div>
+                  <div style="font-size:clamp(0.52rem,0.9vw,0.65rem);color:var(--ss-orange);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5em;">[Bransje]</div>
+                  <div style="font-size:clamp(0.5rem,0.85vw,0.62rem);opacity:0.55;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.15em;">Hva vi leverte</div>
+                  <div style="font-size:clamp(0.58rem,1vw,0.72rem);line-height:1.5;opacity:0.85;margin-bottom:0.4em;">[Beskrivelse av leveransen]</div>
+                  <div style="font-size:clamp(0.5rem,0.85vw,0.62rem);opacity:0.55;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.15em;">Relevans for Lyse</div>
+                  <div style="font-size:clamp(0.58rem,1vw,0.72rem);line-height:1.5;opacity:0.85;">[Overførbar erfaring]</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:clamp(0.6rem,1.4vw,1rem);border-top:3px solid var(--ss-red);">
+                  <div style="font-size:clamp(0.65rem,1.2vw,0.85rem);font-weight:700;margin-bottom:0.15em;">[Kundenavn]</div>
+                  <div style="font-size:clamp(0.52rem,0.9vw,0.65rem);color:var(--ss-orange);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5em;">[Bransje]</div>
+                  <div style="font-size:clamp(0.5rem,0.85vw,0.62rem);opacity:0.55;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.15em;">Hva vi leverte</div>
+                  <div style="font-size:clamp(0.58rem,1vw,0.72rem);line-height:1.5;opacity:0.85;margin-bottom:0.4em;">[Beskrivelse av leveransen]</div>
+                  <div style="font-size:clamp(0.5rem,0.85vw,0.62rem);opacity:0.55;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.15em;">Relevans for Lyse</div>
+                  <div style="font-size:clamp(0.58rem,1vw,0.72rem);line-height:1.5;opacity:0.85;">[Overførbar erfaring]</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:clamp(0.6rem,1.4vw,1rem);border-top:3px solid var(--ss-light-purple);">
+                  <div style="font-size:clamp(0.65rem,1.2vw,0.85rem);font-weight:700;margin-bottom:0.15em;">[Kundenavn]</div>
+                  <div style="font-size:clamp(0.52rem,0.9vw,0.65rem);color:var(--ss-orange);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5em;">[Bransje]</div>
+                  <div style="font-size:clamp(0.5rem,0.85vw,0.62rem);opacity:0.55;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.15em;">Hva vi leverte</div>
+                  <div style="font-size:clamp(0.58rem,1vw,0.72rem);line-height:1.5;opacity:0.85;margin-bottom:0.4em;">[Beskrivelse av leveransen]</div>
+                  <div style="font-size:clamp(0.5rem,0.85vw,0.62rem);opacity:0.55;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.15em;">Relevans for Lyse</div>
+                  <div style="font-size:clamp(0.58rem,1vw,0.72rem);line-height:1.5;opacity:0.85;">[Overførbar erfaring]</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 11: Neste steg — white -->
+        <div class="swiper-slide slide-white">
+          <div class="slide-inner">
+            <span class="slide-num">11 / 12</span>
+            <span class="slide-eyebrow">Veien videre</span>
+            <h2 class="slide-title">Neste steg</h2>
+            <div class="section-divider"></div>
+            <p class="slide-subtitle">Vi er klare til å starte. Her er hva vi foreslår som umiddelbare neste steg.</p>
+            <div class="slide-body">
+              <table class="steps-table" style="color:var(--ss-off-black);">
+                <thead>
+                  <tr>
+                    <th style="width:50px;"></th>
+                    <th>Aktivitet</th>
+                    <th>Ansvar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><div class="step-num" style="color:var(--ss-dark-purple);">01</div></td>
+                    <td>Gjennomgang og godkjenning av tilbud</td>
+                    <td style="color:var(--ss-red);font-weight:600;">Lyse</td>
+                  </tr>
+                  <tr>
+                    <td><div class="step-num" style="color:var(--ss-dark-purple);">02</div></td>
+                    <td>Avklaring av kommersielle betingelser</td>
+                    <td style="font-weight:600;">Lyse og Sopra Steria</td>
+                  </tr>
+                  <tr>
+                    <td><div class="step-num" style="color:var(--ss-dark-purple);">03</div></td>
+                    <td>Kontraktsinngåelse</td>
+                    <td style="font-weight:600;">Lyse og Sopra Steria</td>
+                  </tr>
+                  <tr>
+                    <td><div class="step-num" style="color:var(--ss-dark-purple);">04</div></td>
+                    <td>Kickoff — Oppstartsfase starter</td>
+                    <td style="color:var(--ss-dark-purple);font-weight:600;">Begge parter</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="margin-top:0.8rem;padding:0.6rem 0.9rem;background:var(--ss-bg-purple);border-radius:6px;border-left:3px solid var(--ss-dark-purple);">
+                <p style="font-size:clamp(0.6rem,1.1vw,0.78rem);color:var(--ss-dark-purple);font-weight:600;">Vi foreslår oppstart innen <span style="color:var(--ss-red);">[dato]</span>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SLIDE 12: Kommersielt — gradient -->
+        <div class="swiper-slide slide-gradient">
+          <div class="slide-geo">
+            <div class="geo-orb" style="width:450px;height:450px;background:#CF022B;top:-120px;right:-80px;animation-delay:-1s;opacity:0.15;"></div>
+            <div class="geo-orb" style="width:300px;height:300px;background:#EF7D00;bottom:-80px;left:15%;animation-delay:-8s;opacity:0.12;"></div>
+          </div>
+          <div class="slide-inner">
+            <span class="slide-num">12 / 12</span>
+            <span class="slide-eyebrow">Økonomi</span>
+            <h2 class="slide-title">Kommersielt</h2>
+            <p class="slide-subtitle">Et dedikert team med fleksibel belastning over tre måneder.</p>
+            <div class="slide-body">
+              <table class="komm-table">
+                <thead>
+                  <tr>
+                    <th>Rolle</th>
+                    <th>Belastning</th>
+                    <th class="right">Est. dager</th>
+                    <th class="right">Timepris (NOK)</th>
+                    <th class="right">Est. kostnad (NOK)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Leveranseansvarlig og adopsjon</td>
+                    <td><span class="load-badge load-high">Høy</span></td>
+                    <td class="right">[X]</td>
+                    <td class="right">[X]</td>
+                    <td class="right">[X]</td>
+                  </tr>
+                  <tr>
+                    <td>AI-rådgiver</td>
+                    <td><span class="load-badge load-high">Høy</span></td>
+                    <td class="right">[X]</td>
+                    <td class="right">[X]</td>
+                    <td class="right">[X]</td>
+                  </tr>
+                  <tr>
+                    <td>Governance</td>
+                    <td><span class="load-badge load-mid">Middels</span></td>
+                    <td class="right">[X]</td>
+                    <td class="right">[X]</td>
+                    <td class="right">[X]</td>
+                  </tr>
+                  <tr>
+                    <td>Teknisk konsulent (Claude Code)</td>
+                    <td><span class="load-badge load-mid">Middels</span></td>
+                    <td class="right">[X]</td>
+                    <td class="right">[X]</td>
+                    <td class="right">[X]</td>
+                  </tr>
+                  <tr>
+                    <td>Entra ID og teknisk integrasjon</td>
+                    <td><span class="load-badge load-mid">Middels</span></td>
+                    <td class="right">[X]</td>
+                    <td class="right">[X]</td>
+                    <td class="right">[X]</td>
+                  </tr>
+                  <tr class="total-row">
+                    <td>Totalt</td>
+                    <td></td>
+                    <td class="right">[X]</td>
+                    <td></td>
+                    <td class="right">[X]</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="betingelser">
+                <div class="bet-item"><strong>Modell</strong>T&amp;M (tid og materiell)</div>
+                <div class="bet-item"><strong>Fakturering</strong>Månedlig, etter medgått tid</div>
+                <div class="bet-item"><strong>Varighet</strong>3 måneder fra oppstart</div>
+                <div class="bet-item"><strong>Etter prosjekt</strong>Evaluering og innstilling til videre avtale</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /swiper-wrapper -->
+    </div><!-- /swiper -->
+  </div><!-- /slide-stage -->
+</div><!-- /swiper-outer -->
+
+<!-- Progress bar -->
+<div class="slider-progress"><div class="progress-fill" id="progressFill" style="width:8.33%"></div></div>
+
+<!-- PPT Toolbar -->
+<div class="slider-footer">
+  <div class="ppt-controls">
+    <button class="ppt-btn nav-btn" id="btnPrev">&#8592;</button>
+    <button class="ppt-btn nav-btn" id="btnNext">&#8594;</button>
+  </div>
+  <div class="thumb-strip" id="thumbStrip">
+    <div class="thumb-item active" data-index="0"></div>
+    <div class="thumb-item" data-index="1"></div>
+    <div class="thumb-item" data-index="2"></div>
+    <div class="thumb-item" data-index="3"></div>
+    <div class="thumb-item" data-index="4"></div>
+    <div class="thumb-item" data-index="5"></div>
+    <div class="thumb-item" data-index="6"></div>
+    <div class="thumb-item" data-index="7"></div>
+    <div class="thumb-item" data-index="8"></div>
+    <div class="thumb-item" data-index="9"></div>
+    <div class="thumb-item" data-index="10"></div>
+    <div class="thumb-item" data-index="11"></div>
+  </div>
+  <div class="ppt-controls">
+    <span class="slide-counter"><span id="currentSlide">01</span> / <span id="totalSlides">12</span></span>
+    <button class="ppt-btn" id="btnFullscreen">&#x26F6; Fullscreen</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
+<script>
+  const TOTAL = 12;
+  const SS_LOGO = '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KSlJl+XEiRNp9erV+k4pALochRC46aabcMstt6B3796Ii4uDpmkoKirCoUOH8N1332H9+vUek1H19fWN8uubBARpCBnxZ1TmbwIuHIEIlgHNuB6XnBv76ipArj2Azazi0i4/IufyOyEhrHd3Eda7O+zP/AaV326isiVfoXrNNtirSiDBClkOASQJRE6jENRkSyAU/1bByLKMDRs20JIlS6Aoir4pgm1i1KhRmDBhAvr164c2bdogLCxMAEB9fT1VVVXh5MmTyMnJwb/+9S9s2LBBtxHjDrjx48fjwIED1LNnTzFx4kT06dNH72dZlnH48GG8/PLLpg04UVFReOWVVxASEuJss9skoaqqGDx4sP5vWZbxyiuv0Ny5c8GTc0a7VFUVcXFxGDJkCPr374/U1FQEBwejuroaeXl52Lx5M7Zs2WKaJOM2rFmzBpMnT6bPPvvMr118qqpix44dum0bB0MAaN++PTp16oTk5GQoioL4+HjIsuzRTn/77+uvv6b77rsPRM4JSp6wZCczLS0NY8aMwaBBg5CWlgar1YqqqiqcOHECW7duxerVq1FYWAjg0mIHtl+/yTja79ixwzRi8UjTt29ffZTx5zp37hy5j+hhYWF0zz330HfffUfGMAePHPPmzSMAppgzjzqdOnWif/zjH3rszdflcDiwadMmGj9+vMmjhsHry8zM1Edt9vy8edD8LPOQnZ1N69ata1IGZWVlmDt3rh4aMY6+AOiGG24gu92uK7cvD9r4LPMQHR1Njz32GG3ZsoUqKyu91j937lyfcrz11lvp+++/b7INe/bsobvuusvD2+CrWR40ETTNGYawndtLZbPbU/nToPJZFlOIo+L3oIpFw128NR3f9efSVKdXbQyB1Bw7SWfmLKSD/e6kXehKu5BMu5FBuXIv2me9xulZe5tclHvSLqkLVe7Y4+SxkRg0y+Phhx82eb3cny+88ILftkTkjLf27dvX1AcZGRk0c+ZMOn36NPma18nJydF1iutOSEjwq262yy1btugeoNGTBZwx8ddff71Ju/z+++/ptttu03nhclhHFyxYQFxnYx60N5sIDQ2lX//617R+/XoqLy9vtC3+eNDszZ89e1afM3D3eNu2bUtvvvmmTxvkq7y8HG+88QbFxMR4xRd/PGiTQr3zzjumxvPnsmXLiIhQV1enAwuDLDdKVVU4HA5TjPWZZ56hjh070p/+9Cc6duyYRydyOfn5+RQREWESHNf9y1/+kkpLS03P2O122O12fZKE/zaWvWTJEj2u6w7Ss2fPJqJL8TtfAM08PPTQQ6ZZVq7P2G53HrZt20axsbFe6+dZcg5J+AJoIw933nknHT9+3CRDXqnBr6InT56k8PBwr3L84x//SO4y9NYG4wTjK6+8YnqVbClAExFUzXmP7dx+qvhLFyp7isMdrpj0c6DSWWHkuHCEiDQ9ft0ql2sliOa4VKbmcKBi8w46Oe1F2t/5JtqFdNqFFNqNzrRPck4u7rNeQ3st19C+4Gtpj+hM+zvdRI7qGmiuXYu+6mMju/HGG02vuYAzFMU6a7PZPGyJ7cm9P8rKynDttdfS0KFD6dNPP6Xq6moPW+Jy6+vrYbfbdb02AnR8fDxduHCBuH5+xngxT3a7HRxmc8eEUaNG0ZkzZ3SdMtqA0S6NgDNnzhyPcIckSdS2bVsqKioi48ojXwBtfP7mm2+mQ4cOebUJoz02B6D53ocfftik6yy/7t276/NZrPtNYcGhQ4eoc+fOHhjTbIBeuHChacRnQcybN09vgJEhXyM3M2u321FVVeXxvfvIxvEt93rvvvtukyD8WaZnnNn+6quv9JiPcQIuISGBysrK9PK8AbQ7D+7L1hozTiPwG42Tge6GG24wKaMvgGYepk2bZpKDu+y5vc8884xXOT7yyCPEsvGnDUYZPvvss6ayWgrQRATNFVt2VJyh8n+OpLInQBWuGHT58xYqfxJUtWaWU96qrfUA2nipKjS3iUW1ugalqzdSwW9n0cHM0bRb6k456EA5SKZd6Ei70ZF2IJnOv+d0VIxA70sHiAi88sY4J9GmTRsqLCzU+4PtqTHd5j7j1UBN2YRxJZY3gC4rK/MKBu7Pf/nllx6ACoBGjhypOyz+2KVRn5577jlTmaxL/FbBTktTHvSkSZP01VlNydBfgDbao9G544EkLi5Od5JsNluT7dY0TW/PsWPHKDY21lS33wDt3iHGGVIhBIWGhtL8+fOppqbGp/AbA213z8zISE1NDTp27GgShBCCkpOTdRD1B1TcLwbJ6dOne/UAPv74Y+J73QGa2x0XF0fFxcX6xGZz6ueOue+++7wCnHHk9wbQRk+FyHNwc5djXV0dMjIyTHIEQOnp6XpIpzltYLk7HA707t3bq1E1F6CJSPeMNc2B6u/+TGXPBlPF06CK54Oo8lmJSmcnkb3iLKma2rpetLdLVT3AVm2oR9WuXCr+2xLK//VzdPTWB+jwnf9FF5etdvWD5pyUbKRc1tfx48ebJsW4T/r160fbtm0j9+fcvT9vk2dcvj+AfrkAPX78eNPENNvE2bNn9X539/59Xeyw2Ww2ZGZmmjxoIQR1796dGhoaGg1xcBsGDhyor1jy1+Egahqg2WZfe+01r5hhnDxtCRYsXLjQ64DXJEDzlyUlJWjTpo3JwI1Xp06d6NFHH6Xly5cT7/LxZdzG1yVv9/D327ZtM3UCK/OcOXOab/xu5auqirNnz1JUVJReByvb5MmTdQNxB2jmYfr06S3mgY1o+/btJoXgst966y29fneANg6MR48eJaOS+ZJjTk6O13DK3LlzW9wGfuaf//xn6wE0kWmdc/3JbVS+IJvKngRVPieo7OlLy+00hx08gXelLk21Q3XYodrt0OxNLJ1T/eOF5fHWW28RYJ4PMHqDw4YNozlz5tDWrVtNYTxvuuSPp228n6hlAG0EyHbt2pnsBgDNmjWL/JFBYxcDoHEJmhCCdu3apZftDaB5TojnUfx13JrrQY8ePdpjBVpaWhpxiNffDXdGmaqqqjujxsGpKYBWgEuzt23btsWsWbPw2GOP6duDeeZfkiQcP34c8+fPx/z58xEaGor09HTq3r07evTogczMTGRkZCAtLU1ERUWZ9qoby2DiWel9+/YBuJRxyuFwwGKx4LbbbgNRy4+g4fISExPF0KFDaeXKlfp3RIT9+/frPLgTzwqPGzcORC3LmcsrIK655hqRkpJCJ0+eNNW1f//+Rp9VVRVjxoxBRkZGozPc3Ibc3FwQOWebjXIcNWpUi+XIs+UjRoxAeHg4qqurWyffgXDxoqmwpl4vlF9vQMO2BWTf9DJEfTFsOYthybyDrF1HCdJUCOlKZRkjCFeGPaE5dRREABFII1cKaV4BAb/zb3Af3HPPPWLRokW0c+dOWCwW3bhZDzds2IANGzYAAOLj4ykjI0O3pR49evAqHREUFGQqn1cGtUpfuJGmabwChIqLi/U62CaysrLAb7bGVT5NEYOP7NyurdcFXFphtHfvXvTr18/r83zPDTfcgAEDBlyR7HOyLKO2thZ5eXk6QHJfjRo1CsHBwfpqlOYQr4QLDQ3FiBEjsGjRItPqrMZIR1FWqkcffVSUlJTQiy++qBfOv/FSEU3TUFtbi4MHD+LgwYMmRtq1a0ddunRBVlYWhgwZguzsbNG2bVsA3vMIFBQU6M/yEqQOHTogPT1dXK4Capozb0D//v2xcuVKXVAAUFRUhKqqKnAuCWMbiAjR0dHo2rVrizNxGTulS5cuOHnypF42AJw+fbrRZwHglltu0RWlKcrPz9ef5XoSExORlpbWYjlyWUlJSaJTp06Um5vbuqAgOZfbSbKM0MGPC0evO6l+wyvQdv4TNR/+AtJju0mJzRAg1ZlYqTWJCBACtbs+IDkiHkFdb3U2TFOdeagVc583p9Us/5CQECxfvhx33303tm/fDuBSciG2A3aOzp8/j/Pnz2Pr1q16OSEhIejQoQP16tUL2dnZGD58OPr06WPK79DaIMV0/PhxnU8GZwCYOHEiZFkmf3TSG/HSU6Mtsk6xDgPw0Hm+59Zbb9XBvqXOW2N08eJF4hwmRtvr16+f37bojfhZHoD8LceUIYTB94UXXhCDBw+m2bNnY8OGDaa1ewxY7sIhcr5uFxUVoaioCJs2bcK8efOQmJhIY8eOxcMPP4y+ffsKvpcFzklGuGwASEhIAHsNlwsIQggkJibqPDLV1taisrKSoqKihPv9RISYmBjExMRcVuVcX1xcnMdvFRUVHvcxsUF07tzZ79SP1dXVHt+1a9cOvpLe+ENsRJIk6W1oba+NvWPSHFCiU0T4HQvg6P8A1a2agarPHkDUg6sgWcPgfBNuzbqd5UmKFTVvj4G9zwQKuvEPsMRn6kDtfkZhc4jfPpKSksS6devw+uuv08KFC3WHBLjk/HgDWU3TUFdXh2PHjuHYsWNYtmwZAKBv3740ceJETJ48WURHR7c6SLMulpaW6jwaib+/XOJyjeWXlJQ0yVd6evoVTWlcVVUFTkBmrLddu3aXVS8/m5CQYCq3KfIYghikb775ZrF+/XqxdetWPPnkk+jTp49+2CJPHhlXBQhXZihWOEVRIEkSzp07h8WLF2PAgAGYNm0a8QYQHj15I4WRQkJCmtWIpsibAvPrpi/yNgi1lIKDgwGYldHolfgilkNziesxyvFyFdrf9Ip+E5EzTSgRQICQFIA0EKmQ218nwqesEmHjXgcJeD0G67JJSICmIejaX4iQsXPRsG0Jav5+PapXPUVqzXmCJLt4a9YJAOYqXHoeHByMP/zhDyI3N1csWbIEP//5z5GcnKzHR40XzylIkuRhTwCwZ88eTJ8+HX379qVly5YRv922NvnSF7YLyZVJTnZld+NPBqKmLrZtf22c72NbulLEIVD3et3DTC2l5mKKV6vj1xpJkpCdnS2ys7NBRDh69Cjt2bMHOTk52LdvH3788UdTyk1TwYqiAwPHj9544w0cPnyYli9frr+mGUGIhcHeZWuNksYRkclqtTYq9Pr6etTV1cFisVx2/ZWVlQDMymis21c7mzNAGQchfo4ng9ggWiJPb286l0UE504/WYIQrhkiIsDhjAELSQKRA4AEa4d+l86vuhKnAUoSoKkIHvw7YT+1iZD7BdQN81B18HME3/RnCu57r/NcLs3hHEBaVIWkv5JHRUXh3nvvFffeey8qKytx4MAB2r17N3bt2oWDBw/i5MmTKCsr87AnNmoGN0mSkJ+fj/Hjx2PRokX00EMPiSv1ym8ko2PVmsT6Ghsb6/e9V4qsVqspPsy2c7n6z3zzmYjGQaox8ql1bPA8oiuKgq5du4quXbtiwoQJAJxGW1hYSEeOHMHBgwexb98+5Obm4vjx43pYhLc3CiFgtVqxevVq/OlPf6KXXnrJme43Jsaj7rNnz6KqqgoRERGX7f0Rkdf4bGRkJNzDG3w/AFy4cAFFRUUUGRkpLmeiEADOnDmjf8flcFy+tchYHrfh7NmzKC0tbXFd3O66ujqcPXvW9F1LiUAQsgStrgENJSWkRIYLJSoKMHjoQpNcMWIOM1zBROyutoSNeg3l+VtgtVUC5SdR/+lEOA5+TiFj5kJp2/myTlJhJ4WBGgAiIyMxaNAgMWjQIP2+oqIiOnnyJPLy8pCbm4vc3FwcOHAAFy9e1MvhZWvsOf/2t7/FwIEDqVevXq1y6Cn3LYe0jAO8oih4++23kZycrG97ZuKYO28hby5JkoTk5GTd1q5UCKMpio6ORkREBMrKynS+XJvpLisGDThldOLECQCtANBcIHe4+9IRWZYRERGBHj16iB49euDOO+8E4PQ8Dx48SMuWLcPixYtRUlKiM2O32yFJEhYuXIjHH3+c2rVrJ7p06aKXz5N6RUVF+OGHHygrK+uyZmv5lYsnaIzgkpqaqnvvRmXgttlsNuzduxcZGRktmpDgui5cuECHDx8GcGmGXAiBtLS0FrXJnZh3liO/okmShIsXLyI3N5eGDx/eIjmyAh05coROnTrlt1L5LE8jCEng/Acr6Nyf5wMXKiBHhJGc0h5hWT0RNTwLoQP6wBLXRu8QcmiAC9RxBYxWCKcXLbdJEyHX/5Zs/3oBUrgFskWDevALVJ/6HsFjX6PgaycIIs11yGzLPVWjPXFfMYAnJCSIhIQEDBw4UL+/uLiYvv/+e7z33ntYvny5i2fnxKKiKLDb7Zg/fz4WLVp0OWLQyahPRo9ZkiTY7XYkJSVh6NChVww9r7SH3FTdbdq0EUlJSVRWVmbS940bN2L69OmXtarMHYv8es7bl7xuz8ggv1pxPIx/M25NVVUVwcHBuO6668RLL70kduzYgW7duukMMriXlZXpy+t69eqlJ2EBoHsan3zyyWUBAvN/6NAh+v7773Vl49G5b9++TZbx6aeftng05/asXbsWpaWlerv46tOnT7PL9EbMW+/evREUFKS3kRXpvffea7EcuazPPvtMn4xq8Sy2qkFIApVbcujUfdOhHs0HldXCfuocard8j+LX/o5jt/0XDvUahx/vnkolS1aQo/giCUVyJigSAqSqwBV4xYZLPkFZDwMxsSC7c/21CJUh6otQ9/E9qP1qOmkgaBAgat7Bqzzf4W5PbEtG0HZPmdCuXTtx++23i2XLlonFixebltdxmVu3btUH/8sFOANAi5SUFH0A4e9fffVVAM6wIe81MF7N2bRiTD/sHvv9KYgHvT59+ug2xDJeu3YtTp48SS0J8/D9p0+fJl5W6W8ZJoBm4TEQG7PZeSN30Da+xtXX1yM9PV1MmzbN5LnySMJLWbp16yauueYaU6xaCIG3334bP/74IymK0uwMUEZv/MUXX4TNZjPFAokII0eO9Pk8y+Crr77Cjh07iDNZNad+ltu8efNM8lJVFeHh4SYv6XKI29WpUyfRu3dvvU9Yjp988gl2795N7G35S6ys586do0WLFum8Xy5d+NvHIDggB0c549CyFZIlDEGWGCiWUKD4IiqWfoWCSY/jUO/bkH//U1T+zQbS6ushZNkVN9b0ZEWtQkKCIA1SRIJQuowF2QABxbmSQ5Yghcho2PBXVH/8S4JqA+AKwTRBRqfD2Ce++DaCttEJYvCbMmWK6Nevnw7GgFPXKioq9Nime3nu1NRrOvdzWFgYRowYAcA8J/XNN9/g448/pqCgIBNWGCcMG7tYHhaLRZ/45N9+qrAGE8tl5MiRJmdKkiTU1NRg1qxZunyao3scDpozZw6qqqqaNZCaAJqFXVBQQC+//DL17duXNm/eTJIrFak/o5z78hmOv/K/udGRkZEAAIvFgokTJ3pMZlVWVmLSpEmoqakBg3RT9fOsOJf75ptv0meffWZSMCJC9+7dMXjwYNEU4NjtdjzwwAMoLS3VXycbG/nYmDhMMnPmTNq9e7c+8LASDhs2DO3btxfNTj3og7jsSZMmmWbHhRCw2WyYOHEiioqKiNNUNtUG3ghBRHjwwQdx8eJFXXYtInLFnW021OcegSyCQA67vilEqBo0VQVUDZAVKJYoKJYoaMWlKHv/MxwbMwU/9LmTTs94lWoP5BEkyQnWQoAcreVVaxAgWNJvdLLMuUdJAzQNcoQC7Pkc1Z9OIpAK0jfY+iYG0U2bNtEvfvELPpkHQgjdQ/aHGCTsdrseGzU+Gxwc7HXSOTw8XL/XOAF//vx5amoVEwBMmTLFY8WFJEl46KGHsGrVKrJarX61xfhmwCD97LPP0tKlS4nnqK4G4v4aNWqUaNeunR7a5LfH9957D//4xz/IYrGYbN0bGdtstVqxfPly+vvf/25Kn+wXsVepaRrWr19P999/v741GgClpqZ6pKg0Zm0yXu5bL9evX09RUVGmLchCCLJYLPoWZk3TcPHiRSQlJZm2pPLnoEGDTNmjGEDc63VPwvTCCy94bOvkraV8VBOfWegrmx3/OysrS+eXefbGg5HH559/Xt8eLdzya3z77bdE5DubHd/P+Rqa2tLK/VdWVoYOHTp4lWNmZibt2bPHZxvcZVhSUgJOOWrMI2KUo99bvV0Dq62sHHsTb6C96EZ7FX+OmupJ+yzXUK7ci3ajizN5UVBPOjxiMp1/fxnVl5Sa6tDsDpCf27E9eXSd8Vewncr+KKh8pufJLxWzLFQ6HVS92pkZUPWSK4T7ory8HAsXLqTs7GyT7O6//35TJjpvuuQrTcLjjz9u6lPWrdGjR5MRMIxpbENDQ3W94n585ZVXdL3yVSd/3nvvvaY+N9rSSy+9ZDr30x+72Lt3L40YMUIvY9GiReQuPyLPrd7c5uXLl/tlE+54QdS8bHazZ8/2aDfzwPJrDI+Mvy9ZsoRCQkJMtm3sR7+TJd1zzz2mzuQODQoKoqlTp9KOHTtMHeLrysvLo6efflo/hcMdoIYNG6YnIOK6P/zwQwKgH6dkvD8yMpKefvppOnDggM/ct0TOc8Pef/996t+/v6leo6CHDRtGDEZcd2MAzTzExMTQCy+84JHy03hVV1djxYoVNHjwYI/yuP677rpLNyZf+aCbC9DGez755BMPOTIfISEhNH36dPrhhx98tuHcuXP0t7/9jdLS0kwg4E2WzQboikrs6zCU9qFb84+eUno603+KTMpBGuUghXKTB1PBoy9Q1fbdZMxOpzmcGev8PdjVCNC2whwqe1ZQ+Qxvx3MJqpghU+lzQWQ7m+uUoRtIc5+ePn3alGzHaE89evSgBQsWEJ/k3thVU1ODf/3rX/r5e950ynhEldHIbTYbunfvbsrkKISgyMhI02ks3nTJmBeZD4Zl/o260Lt3b1qwYAEVFBT4LK+urg4bNmygyZMn65hgPBnoxRdfpPr6elOei58KoBmXqqur9aROxnbzc4MHD6bly5d7pH3ly2azYdOmTcQnRLk/7y9AC/7SFRemrKwsFBYW6mEF9z3jGRkZ6N69Ozp27Ii4uDj9taChoQH5+fnIy8vD/v379bXHxrAFx3LXrVuH4cOH68uC+HPatGn0xhtv6JOGRGSqX1EU9OrVC7169UJKSgpCQ0OhaRqKi4uRl5eHffv26buRjK8S3JaUlBRs3rxZX85D5AxFfPfdd3TLLbd43R9vXG4IOI9V79u3LzIzM9G+fXsoioKqqiocOXIEe/fu1ZfR+Kp/x44daNeunSByvhpJkoSTJ09Sjx49UFdXZwoFbdu2Dddff73fy6f4vscff5zefPNNn3K0Wq247rrr0LdvX32XJZ9Ks2fPHn23GC/lYl6ZuD3vvvsu7r//fuFwOBrfyELkCkfYcei6u8ieewTCEgSoLQiZCDjXSguAbPVQ0QCIEIQM6o24Cbch8vabEdw+wbAKxJVjo4k8GpqmQhISGg58TrUf/hxSsAKQl1dvSQbVqLDc+AzCRr0kvO045H54++236cEHH9RPCGJ9Y70IDw9HZmYmOnfujJSUFNOy0tLSUhw7dgwHDhzQdcrdFhwOB/r06YPt27cLq9XqFI8QJh5+97vf0euvvw5vczlZWVkYMGCAvruttLQU+/btw4ABAzB79mxht9thsViwdetWGjlyJKqrq/VyjHMdgHPZ4LXXXouePXsiMTERsiyjsrISx44dQ25uLn788Ue9XqPNM68fffQRJkyYoOtSeXk5MjIyiFeB8ZzO8uXLcccddzRrSSHfu3LlSrr99ttNCxbatm2LvLw8xMXF6Uv8DHmCaOjQoaisrDTJz9iH6enpyMrKQpcuXRASEoKamhocP34cubm5+OGHH/R+Yxs0hje4P3v06IH9+/cLDiuaYvHuI/+WLVv0k2tbcgYXX+6v9vz3n//8ZzLWxwMEK/Ajjzxi8hCaW78xA5XRA05PT6eDBw+a6vbmQTOfaWlpNHLkSP17bwfheruMdfJzgPP0CQ4xeHsVvVwPmuXIXsiUKVNaLEf29oyvd3wqBJeH5njQRPqk3pE7H6bdSKW9lmsu76RtKZP2uk5B2Sf1pN0ur3pv2wH048Qn6OLX68heU2uWj92VtN+LZ605bNCIUPXheCr7vesgW28nkD8vU9nvBVV/+Eun1+4jJSr3Gae7NcreqCP+XMb7OUQIOM/cc9dpoz1rmoajR49SSEiIRxlGT879uu+++3S943Zs2LCBEhMTTfrRnLZw+9kbNtrSCy+8QLW1tVeFB+3+zNq1a3XdN54naMSZptpsvLdt27bNSjequxWM7oMGDRJr165FZmamziQH9o1bPHmm2f3imVzA7H0qioK5c+fi2WefFe4ZoXg0JiIsWLBAzJ8/H1FRUV7r91U318v380ioqipuv/12bN68GZmZmR51uxOPXhaLBcuXLxePPfaYPoBomgZFUWCxWPTLnQce7Xl0dDgcGD58ODZt2oQ+ffo0Wf/lkHE51OLFi8W8efMQGhpq8t58ydHYHp6pdjgciI2NxRdffKGvc2/plm/SnN5yeFZv5wRba0zYkwZyOCfsJEs4LJZo4GIFypb8D/LHTEFe39vp1FMvU9W2PUSqCqHI+npqUrVLy/Y0B4RsQcOhpWQ/+AVEsOR2ZuIlEkJAaAQtNFY/A9Ebcf+/+uqr4i9/+YtpKalRTxuzJU6XwMQelt1uR/fu3fHtt98iMzPT6y5Crj8jI0PMnz9ftwUuk99ojbocEhICi8Vi2k7N3uLQoUPF1q1bMXbsWD08x/XwfU3ZptETdjgc6NatG77++mvMnDlThISEXPGdkMAlGzHaijfidt94441i48aNyM7O1jHAuOLEW5vZjvgN1OA04YMPPtC9ZH9WrZgkwkxdd911Yvv27WLGjBmIj4/3WOPoi4zMsIELITBmzBhs3rwZTz75pM8NE8a1nVOnThU5OTl48MEHERkZaarfGLv15jkavfGBAwfis88+wxdffCGSkpKatVnDZrNBlmW88cYb4uuvv0Z2drbPSRBjHgVuN7+6LFy4EGvXrhWdOnVqlZ1eTZFRjk888YTYuXMnJk6cqAO1e//w5d6eqKgoPPLII8jJycG4ceNEWFiYSaGauyRKSM77I8cMASwREA61dTcIMuDKChRrFBQlFI4jJ3F+3gIcGXQP8vr/jM4891eq2pJDam0thCxdWrYnKbAdWUUNS38NWZacG1GEa2OMEK6/ZQjJAtgdUC0SLH3vZUF4b69hkH7qqafE1q1bMW7cOH3VQ1Prf40xUaPex8fH45lnnsH27dvFtdde2+iAz/b84IMPinfeeQfx8fEeOmDU5bq6Otjtdo/EW1xOWlqa+PLLL8XSpUsxdOhQADDpvXE/hPv+CKNddO7cGXPmzMHOnTvF6NGjm1xNZZTp5ZJRrowfvojb3atXL7Fx40Yxf/58dO3a1eSwuduRMXc349D111+Pzz//HIsXLxadO3fW+fCnTR7uEKN+REQEXnzxRTF16lRatmwZVq5ciT179qC4uLjJZSIxMTHo1q0bhg8fjjvuuAP9+/cXQNPpEXlUUVUVGRkZ4q233sKMGTNo5cqVWL16NQ4cOICzZ8/qne5O0dHR6NKlCwYPHoxx48ZhyJAhevY8oHmJSti4NE3D6NGjxejRo7F27VpaunQptm7dioKCAlNGOlmW0aZNG6SmpmLAgAEYO3Yshg8frufybWxw4FdSI6/ufzeHjHLMzMwUH3zwAWbOnEkrVqzA2rVrkZeXh+LiYtNJ3cHBwUhISEBmZiZGjhyJcePGISUlRe+36OhoDz6bxZ8kgTQNYb16iMhRg6lq5SrIlignqLYmEQEOcmbvUIJhkUJADhW2vftxbu8uFM3+B4K7daSQ/r0Q3Kc7Im/OAor/B7ZvXnTisAIIZyqQSwMIEUhzxrMpJArBd7yG4JSBfqVB5TfT/v37ixUrViAnJ4eWLl2KNWvW4PDhw+BXe18kyzLat2+PPn36YPTo0bj99tvRrl07ATSuU8bnVVXFr371KzFixAj64IMP8O233+LHH3805f0ICgrStzlfd911AMzgwbgghMBdd90l7rrrLuTk5NCqVauwefNmHDlyBMXFxabTRriM6OhopKamIisrC2PGjMHNN98sOMuiL0zwpWvN3STiXia/OTBQN4UJ3G5FUTB16lQxZcoUfPvtt/TVV19h586dKCgoQGVlpc6XJEmIiYlBWloabrjhBtx+++0YNmyY3l9WqxVWqxU8Kcoy8GVLwtcP3ACj8EpLS3HixAk6ceIESkpKwJnpAOfkWWxsLJKTk5GcnKwrEZdlDFX4QzzCGeuvrq7G6dOn6dy5c3p+AiJCaGgoEhISkJSUhMTERNOQ1NigwL8ZJwm57vT0dOTl5Qmr1Qr3STAiwtmzZ+nixYuor6+HJEkIDw9H27ZtERcX53f9TA0NDTh48CDxRgauo0ePHiI8PNxz4qAZZFQcppqaGhQXF1NFRQV4IigqKgoJCQnCmJ6U+ZGcWQmpoKBAl4PD4UDnzp0RGxvrd64STr5fvWs/5WX/AhZyyVRr2UDkFwk4QdQiQdIAtaEGdlRAIAyRd41G++cfQXBcAxzn8qAW7YV24Qi0igKgvgKk1kNAAJYQICoZSuqNsPaZAEtc12bnqPbWDwUFBXT8+HEUFhbCeCK1LMvcH0hJSUFycrLgNc2A97zqTZG7HlZXV6OsrIwYJIKDgxERESHCwsL8Ksu9/urqahQVFVF5eTkqKiqgqipCQ0MRHR2N2NhYJCQkeNhFY21wOBzYv38/8Vs44JRhly5dRExMTItsgnMHcR+wrNPT00VToTtveEhEKCoqotLSUtTU1EAIoeNgfHy8Vxyw2+04ePAg2e12fQFFSEgIevbsKby1xydAG5lgYTYHYFv6nDuxF9uccoyzzI11or8A7T56NwW4xvhca7yWtQb5K8eWyLtZfKgahCyhaN5bVPjUTASJNoBFcWa4I/IZ0/WbXGEJIblS5akqVM0GDQ0ALAjploGoX9yK2El3IrhTqmeyLADQ7KCGWsBR72TGGiZEULjBoVYhWniAAMu3ubF8fo7nOVpCbJNNleEv+DVXV65Gu2guMVAD/zc40KSWCCF0ZXKfHfV2r/FqjRzCxs73t+5Wz12MS9twjXzw3yx8rr8lcWZ+YzB60K2pyN7k6I1/X8bGinm5/AlJAKqGxCenCA2Czs16HaKmFBKCIIQVUBRnWJfg2q0HCLfuJsHRB3EpDMEHuaoOAHZosDuflyNgzeyEsGEDETtmOMKH9ReSK0mWpnJuFgK58j6TEBCSBVJIFABntkMCAFJdspIgLiNZEsu3KVsCzDrdGgOmN1s2/masszltcS/PvVzjhFpzqLVtwpesmyNXdxwwfhrvaQwHjO3iT188NAvJmtN5V4J+6vqvJB//FzPYTC3hv6UDj7dyIAuQpiHpyQdF9NihVPr2UlR8swG2Y4UgWwU0aACE6T/olwSCCid8EwDNmcIUCgALLG2iYElNgvWaDEQMuBZhA3sjJLOzkK2XViYQh270tdFCB10XFMC4i1sIXJo0bCX6qXW5tev/d7CJK9Fm46e/1Jx2tb6rGaAA+UOSMztdWLfOIuwvT6P9n6eh/mg+1R04hvpjBXAUnkN9USlQWwOqrXOCKsGZYCk0FBRkhSUmAkHt2kJKiEdwShIsqYkI6pgES0I7IQxGQHBN8AnX62aTA43BMw9QgH5CCgA0Lr36GWPQV3o53H86CQgIWXbGnjWCZA1CaM9uIrRnNx9P8Oy9f94Hqa6YtuTymhQ5gLkB+rejAEDDuebZfRtsax2OGaDGSUiSE3MJzo0n5AovCOEKLbjWIhuB2XWPM/bH9ztBH6711qKJrd0BCtC/A/1HAzTHjrp27Yrnn39eP39QVVXExMToXvTVEPf+f0+uOK9XSZP+P+eNQlwC5AAF6P8xNbnMLkABClCAAvTT0H+0B81k3LXE1FqrFgIUoAAFqKUU8KADFKAABegqpcBMSoACFKAAXaUUAOgABShAAbpKKQDQAQpQgAJ0ldL/ArryucB2y4MKAAAAAElFTkSuQmCC';
+
+  // Inject logo on all slides
+  document.querySelectorAll('.swiper-slide').forEach(slide => {
+    const img = document.createElement('img');
+    img.className = 'slide-logo';
+    img.src = 'data:image/png;base64,' + SS_LOGO;
+    img.alt = 'Sopra Steria';
+    slide.appendChild(img);
+  });
+
+  const swiper = new Swiper('.swiper', {
+    speed: 500,
+    keyboard: { enabled: true },
+    on: {
+      slideChange: function() {
+        const idx = this.activeIndex;
+        // Update counter
+        document.getElementById('currentSlide').textContent = String(idx+1).padStart(2,'0');
+        // Update progress
+        document.getElementById('progressFill').style.width = ((idx+1)/TOTAL*100) + '%';
+        // Update thumbs
+        document.querySelectorAll('.thumb-item').forEach((t,i) => {
+          t.classList.toggle('active', i === idx);
+        });
+      }
+    }
+  });
+
+  document.getElementById('btnPrev').addEventListener('click', () => swiper.slidePrev());
+  document.getElementById('btnNext').addEventListener('click', () => swiper.slideNext());
+  document.getElementById('btnFullscreen').addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  });
+  document.querySelectorAll('.thumb-item').forEach(t => {
+    t.addEventListener('click', () => swiper.slideTo(parseInt(t.dataset.index)));
+  });
+</script>
+</body>
+</html>
