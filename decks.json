@@ -42,6 +42,7 @@
     "tags": [
       "claude"
     ],
-    "pinned": true
+    "pinned": true,
+    "favorite": true
   }
 }
