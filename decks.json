@@ -10,7 +10,9 @@
   "spendops-chargeback": {
     "title": "Claude SpendOps & Chargeback",
     "description": "",
-    "tags": [],
+    "tags": [
+      "claude"
+    ],
     "uploadedAt": "2026-05-06T20:15:39.660Z",
     "favorite": false,
     "pinned": false
