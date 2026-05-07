@@ -2,7 +2,9 @@
   "user-governance": {
     "title": "Claude User Governance",
     "description": "",
-    "tags": [],
+    "tags": [
+      "claude"
+    ],
     "uploadedAt": "2026-05-06T19:33:13.619Z",
     "favorite": false,
     "pinned": false
