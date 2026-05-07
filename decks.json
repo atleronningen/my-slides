@@ -28,5 +28,12 @@
     "uploadedAt": "2026-05-07T18:18:36.337Z",
     "favorite": false,
     "pinned": false
+  },
+  "Mestergruppen": {
+    "title": "Mestergruppen",
+    "description": "",
+    "tags": [
+      "claude"
+    ]
   }
 }
