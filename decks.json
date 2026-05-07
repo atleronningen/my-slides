@@ -35,5 +35,12 @@
     "tags": [
       "claude"
     ]
+  },
+  "lyse-claude": {
+    "title": "lyse-claude",
+    "description": "",
+    "tags": [
+      "claude"
+    ]
   }
 }
