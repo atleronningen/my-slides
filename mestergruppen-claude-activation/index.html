@@ -411,8 +411,10 @@ footer {
   nav { backdrop-filter: none; -webkit-backdrop-filter: none; padding: 0 12px; }
   section { padding: 40px 16px; }
   .hero, .act-hero { padding: 40px 16px 0; }
-  .opp-grid { grid-template-columns: 1fr; }
+  .adp-hero { padding: 40px 16px 0; }
   .hero h1, .act-hero h1 { font-size: 1.75rem; }
+  .adp-hero h1 { font-size: 1.75rem; }
+  .adp-hero-sub { font-size: 0.9rem; }
   .tech-grid { grid-template-columns: 1fr; }
   .checklist { grid-template-columns: 1fr; }
   .roles-grid { grid-template-columns: 1fr; }
@@ -424,14 +426,26 @@ footer {
   .delivery-grid { grid-template-columns: 1fr 1fr; }
   .why-grid { grid-template-columns: 1fr; }
   .nextstep-grid { grid-template-columns: 1fr 1fr; }
-  .adp-hero-inner { grid-template-columns: 1fr; }
+  .adp-hero-inner { grid-template-columns: 1fr; gap: 28px; }
   /* Seksjonstitler ned i størrelse */
   .sec-title { font-size: 1.5rem; }
   /* Hero visual stacking */
   .hero-inner { gap: 28px; }
   /* Lisensgrid */
   .license-grid { grid-template-columns: 1fr; }
+  /* Nav: skjul tekstnavn, vis kun ikon + komprimerte knapper */
+  .nav-logo-text { display: none; }
+  nav { padding: 0 12px; gap: 4px; }
+  .nav-links { gap: 4px; }
+  .nav-btn { padding: 6px 10px; font-size: 0.72rem; }
+  .nav-tag { display: none; }
+  .opp-grid { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 400px) {
+  .nav-btn { padding: 5px 7px; font-size: 0.62rem; }
+}
+
 /* ADOPTION PAGE */
 .adp-hero {
   background: linear-gradient(135deg, #0f2027 0%, #1a3a2e 50%, #2d6a4f 100%);
@@ -640,7 +654,7 @@ footer {
 <nav>
   <div class="nav-logo">
     <div class="logo-dot">AI</div>
-    Mestergruppen × Claude
+    <span class="nav-logo-text">Mestergruppen × Claude</span>
   </div>
   <div class="nav-links">
     <button class="nav-btn active" id="btn-1" onclick="showPage(1)">Mulighetsrommet</button>
