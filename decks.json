@@ -54,5 +54,16 @@
     "uploadedAt": "2026-05-13T19:29:47.000Z",
     "favorite": false,
     "pinned": false
+  },
+  "mpk-claude-activation": {
+    "title": "MPK Claude Activation",
+    "description": "",
+    "tags": [
+      "Activation",
+      "Claude"
+    ],
+    "uploadedAt": "2026-05-13T21:02:43.277Z",
+    "favorite": false,
+    "pinned": false
   }
 }
