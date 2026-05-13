@@ -65,5 +65,15 @@
     "uploadedAt": "2026-05-13T21:02:43.277Z",
     "favorite": false,
     "pinned": false
+  },
+  "mestergruppen-claude-activation": {
+    "title": "Mestergruppen Claude Activation",
+    "description": "",
+    "tags": [
+      "Claude"
+    ],
+    "uploadedAt": "2026-05-13T22:17:16.846Z",
+    "favorite": false,
+    "pinned": false
   }
 }
