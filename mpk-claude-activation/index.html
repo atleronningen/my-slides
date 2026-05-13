@@ -447,6 +447,7 @@ footer strong { color: rgba(255,255,255,0.7); }
   .license-grid { grid-template-columns: 1fr; }
   .roles-grid { grid-template-columns: 1fr 1fr; }
   .callout { padding: 28px 24px; }
+  .adoption-steps { grid-template-columns: 1fr 1fr !important; }
 }
 @media (max-width: 640px) {
   .opp-grid { grid-template-columns: 1fr; }
@@ -461,6 +462,7 @@ footer strong { color: rgba(255,255,255,0.7); }
   .hamburger { display: block; }
   .callout p { font-size: 1rem; }
   .act-hero { padding: 70px 1.25rem 50px; }
+  .adoption-steps { grid-template-columns: 1fr !important; }
 }
 @media (max-width: 720px) {
   /* No backdrop-filter on mobile */
@@ -503,6 +505,7 @@ footer strong { color: rgba(255,255,255,0.7); }
     <div class="nav-links">
       <button class="nav-btn active" id="btn-home" onclick="showPage('home')">Oversikt</button>
       <button class="nav-btn" id="btn-activation" onclick="showPage('activation')">Claude Activation</button>
+      <button class="nav-btn" id="btn-adoption" onclick="showPage('adoption')">Claude Adoption</button>
     </div>
     <button class="hamburger" onclick="toggleMenu()" aria-label="Meny">
       <span></span><span></span><span></span>
@@ -941,6 +944,254 @@ footer strong { color: rgba(255,255,255,0.7); }
 </div><!-- end page-activation -->
 
 
+<!-- ════════════════════════════════════════
+     PAGE 3 – CLAUDE ADOPTION
+════════════════════════════════════════ -->
+<div class="page" id="page-adoption">
+
+  <section class="act-hero">
+    <div class="act-hero-inner">
+      <button class="back-btn" onclick="showPage('home')">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd"/></svg>
+        Tilbake til oversikt
+      </button>
+      <h1>Fra aktivering til <em>konkurransefortrinn</em></h1>
+      <p>Lisensen er på plass og Activation er gjennomført. Nå handler det om å bygge organisatorisk kapabilitet som gjør Claude til et varig fortrinn for MPK – ikke bare et verktøy for noen få.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+
+      <!-- BRIDGE: Forutsetter Activation -->
+      <div style="display:flex;align-items:center;gap:16px;background:var(--mpk-blue-lt);border:1.5px solid var(--mpk-border);border-radius:var(--radius-md);padding:20px 24px;margin-bottom:48px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--mpk-orange);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 20 20" fill="white" width="18"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd"/></svg>
+        </div>
+        <div>
+          <p style="font-weight:800;font-size:0.95rem;color:var(--mpk-navy);margin-bottom:3px;">Forutsetter Claude Activation</p>
+          <p style="font-size:0.85rem;color:var(--mpk-muted);margin:0;">Adoption bygger videre på det tekniske og organisatoriske grunnlaget som etableres i Activation-fasen.
+            <button onclick="showPage('activation')" style="background:none;border:none;color:var(--mpk-orange);font-weight:700;cursor:pointer;font-size:0.85rem;padding:0;margin-left:4px;font-family:'Mulish',sans-serif;">Se Claude Activation →</button>
+          </p>
+        </div>
+      </div>
+
+      <!-- CHALLENGE BOX -->
+      <div style="background:var(--mpk-navy);border-radius:var(--radius-lg);padding:32px 40px;margin-bottom:48px;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 70% at 90% 30%,rgba(212,80,10,0.2),transparent 60%);pointer-events:none;"></div>
+        <p class="section-label" style="color:var(--mpk-orange);position:relative;z-index:1;">Hvorfor innføring er mer enn teknisk oppsett</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;margin-top:16px;position:relative;z-index:1;">
+          <li style="display:flex;gap:12px;color:rgba(255,255,255,0.85);font-size:0.92rem;line-height:1.65;"><span style="color:var(--mpk-orange);font-weight:800;flex-shrink:0;">→</span>De fleste virksomheter aktiverer lisensen, men henter ikke ut potensialet</li>
+          <li style="display:flex;gap:12px;color:rgba(255,255,255,0.85);font-size:0.92rem;line-height:1.65;"><span style="color:var(--mpk-orange);font-weight:800;flex-shrink:0;">→</span>Uten struktur blir Claude et personlig verktøy for noen få, ikke en organisatorisk kapabilitet</li>
+          <li style="display:flex;gap:12px;color:rgba(255,255,255,0.85);font-size:0.92rem;line-height:1.65;"><span style="color:var(--mpk-orange);font-weight:800;flex-shrink:0;">→</span>Brukerne mangler felles metoder, maler og tilpassede verktøy som sikrer gjenbruk og kvalitet</li>
+          <li style="display:flex;gap:12px;color:rgba(255,255,255,0.85);font-size:0.92rem;line-height:1.65;"><span style="color:var(--mpk-orange);font-weight:800;flex-shrink:0;">→</span>Uten governance og policy oppstår usikkerhet om hva som er lov, og adopsjon stopper opp</li>
+          <li style="display:flex;gap:12px;color:rgba(255,255,255,0.85);font-size:0.92rem;line-height:1.65;"><span style="color:var(--mpk-orange);font-weight:800;flex-shrink:0;">→</span>Teknologien er klar. Spørsmålet er om organisasjonen er det</li>
+        </ul>
+      </div>
+
+      <!-- TRE LAG -->
+      <p class="section-label">Vår tilnærming</p>
+      <h2 class="section-title">Tre lag av verdi</h2>
+      <p class="section-lead" style="margin-bottom:32px;">Vi møter MPK der dere er, og bygger kapabilitet lag for lag.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+        <!-- Lag 1: fullført / nedtonet -->
+        <div class="opp-card" style="opacity:0.55;border-top:3px solid var(--mpk-border);">
+          <div style="font-size:11px;font-weight:800;letter-spacing:0.08em;color:var(--mpk-muted);margin-bottom:10px;">LAG 1 — FULLFØRT</div>
+          <h3 style="font-size:1rem;">Kom i gang riktig</h3>
+          <p>Teknisk oppsett, governance og lansering. Dekket i Claude Activation.</p>
+          <button onclick="showPage('activation')" style="margin-top:14px;background:none;border:1.5px solid var(--mpk-border);border-radius:var(--radius-pill);padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;color:var(--mpk-muted);font-family:'Mulish',sans-serif;">Se Activation →</button>
+        </div>
+        <!-- Lag 2 -->
+        <div class="opp-card" style="border-top:3px solid var(--mpk-orange);">
+          <div style="font-size:11px;font-weight:800;letter-spacing:0.08em;color:var(--mpk-orange);margin-bottom:10px;">LAG 2</div>
+          <h3 style="font-size:1rem;">Bygg organisatorisk kapabilitet</h3>
+          <p>Championsprogram, opplæring, brukertilpasning og interne ressurser som sikrer at adopsjon sprer seg og holder seg over tid.</p>
+        </div>
+        <!-- Lag 3 -->
+        <div class="opp-card" style="border-top:3px solid var(--mpk-navy);">
+          <div style="font-size:11px;font-weight:800;letter-spacing:0.08em;color:var(--mpk-navy);margin-bottom:10px;">LAG 3</div>
+          <h3 style="font-size:1rem;">Hent ut det fulle potensialet</h3>
+          <p>Skreddersydde skills, agentløsninger og et internt AI-bibliotek som gjør Claude til et varig konkurransefortrinn for MPK.</p>
+        </div>
+      </div>
+      <p style="font-size:0.85rem;color:var(--mpk-muted);margin-top:14px;font-style:italic;">Lag 2 og 3 kan kjøres sekvensielt eller parallelt, avhengig av modenhet og ambisjon.</p>
+
+      <!-- TJENESTER -->
+      <div style="margin-top:56px;">
+        <p class="section-label">Tjenester</p>
+        <h2 class="section-title">Fire veier til varig adopsjon</h2>
+
+        <div class="timeline" style="margin-top:40px;">
+
+          <!-- Tjeneste 1 -->
+          <div class="phase">
+            <div class="phase-left"><div class="phase-dot"></div><div class="phase-line"></div></div>
+            <div class="phase-content">
+              <p class="phase-num">Tjeneste 1</p>
+              <h3>Championsprogram og kompetansebygging</h3>
+              <p>Adopsjon skjer ikke av seg selv. Den bygges innenfra, av mennesker som tror på det de formidler.</p>
+              <div class="phase-items">
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Identifisering og opplæring av interne Champions og Trainers som driver adopsjon i egne team</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Tilpasset opplæringsløp basert på Anthropics AI Fluency-materiale, supplert med MPK-spesifikt innhold</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Train the Trainer-program som gjør MPK selvdrevet over tid</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Rollespesifikke workshopserier for saksbehandling, økonomi, IT og ledelse</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Etablering av interne fellesskap og delekanaler for maler, erfaringer og gevinster</p></div>
+              </div>
+              <div style="margin-top:16px;padding:14px 18px;background:var(--mpk-blue-lt);border-radius:var(--radius-sm);">
+                <p style="font-size:0.82rem;font-weight:800;color:var(--mpk-navy);margin-bottom:4px;">Leveranser</p>
+                <p style="font-size:0.82rem;color:var(--mpk-muted);line-height:1.6;">Championsprogram med opplæringsplan, tilpasset AI Fluency-kurspakke, workshopdesign per funksjon og verktøy for måling av adopsjon og kompetanse.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tjeneste 2 -->
+          <div class="phase">
+            <div class="phase-left"><div class="phase-dot"></div><div class="phase-line"></div></div>
+            <div class="phase-content">
+              <p class="phase-num">Tjeneste 2</p>
+              <h3>Claude-tilpasning for MPK</h3>
+              <p>Gjenbruk, konsistens og kvalitet – bygget inn fra starten. Claude tilpasset MPKs regelverk, tone og arbeidsprosesser.</p>
+              <div class="phase-items">
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Kartlegging av MPKs viktigste brukstilfeller og design av tilpassede Claude-ressurser</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Promptbibliotek tilpasset saksbehandling, premieinnkreving, EØS-korrespondanse og rapportering til AID</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Oppsett av Projects og tilpassede instruksjoner med kontekst om regelverk, tone og arbeidsmetodikk</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Artifacts og maler for vedtaksbrev, avslagsbrev, årsrapportering og styredokumenter</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Etablering av internt AI-bibliotek for deling, forvaltning og videreutvikling</p></div>
+              </div>
+              <div style="margin-top:16px;padding:14px 18px;background:var(--mpk-blue-lt);border-radius:var(--radius-sm);">
+                <p style="font-size:0.82rem;font-weight:800;color:var(--mpk-navy);margin-bottom:4px;">Leveranser</p>
+                <p style="font-size:0.82rem;color:var(--mpk-muted);line-height:1.6;">Promptbibliotek, tilpassede Projects-oppsett, artifact-maler for MPKs dokumenttyper og forvaltningsrutiner.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tjeneste 3 -->
+          <div class="phase">
+            <div class="phase-left"><div class="phase-dot"></div><div class="phase-line"></div></div>
+            <div class="phase-content">
+              <p class="phase-num">Tjeneste 3</p>
+              <h3>Agent Marketplace og automatisering</h3>
+              <p>Fra enkeltoppgaver til helautomatiserte arbeidsprosesser. Identifiser hvilke prosesser hos MPK som er modne for automatisering.</p>
+              <div class="phase-items">
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Identifisering av MPK-prosesser modne for automatisering, f.eks. premievalidering og AA-registerkontroll</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Design og bygging av spesialiserte AI-agenter for avgrensede oppgaver</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Integrasjon av Claude med eksisterende systemer via MCP-servere (ERP, fagsystem, dokumentarkiv)</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Kobling mot ny premieprosess basert på A-meldingen (oppstart 2026, ferdig H1 2027)</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Etablering av forvaltningsmodell for agenter, inkludert eierskap, sikkerhet og livssyklushåndtering</p></div>
+              </div>
+              <div style="margin-top:16px;padding:14px 18px;background:var(--mpk-blue-lt);border-radius:var(--radius-sm);">
+                <p style="font-size:0.82rem;font-weight:800;color:var(--mpk-navy);margin-bottom:4px;">Leveranser</p>
+                <p style="font-size:0.82rem;color:var(--mpk-muted);line-height:1.6;">Automatiseringsanalyse, agentdesign og implementering, integrasjonskart og forvaltningsmodell.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tjeneste 4 -->
+          <div class="phase">
+            <div class="phase-left"><div class="phase-dot"></div></div>
+            <div class="phase-content">
+              <p class="phase-num">Tjeneste 4</p>
+              <h3>Governance, sikkerhet og AI-policy</h3>
+              <p>Trygg bruk er en forutsetning for skalering. Særlig viktig for MPK som håndterer sensitive pensjonsdata under statlig tilsyn.</p>
+              <div class="phase-items">
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Utforming av AI-policy og retningslinjer for akseptabel bruk tilpasset MPKs sektor og regulatoriske krav</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Vurdering av etterlevelse mot EU AI Act, GDPR, NIS2 og personopplysningsloven</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Definisjon av dataklassifisering og håndteringsregler for pensjons- og premiedata</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Design av rollebasert tilgangsstyring</p></div>
+                <div class="phase-item"><div class="phase-item-dot"></div><p>Etablering av løpende revisjons- og oppfølgingsrutiner</p></div>
+              </div>
+              <div style="margin-top:16px;padding:14px 18px;background:var(--mpk-blue-lt);border-radius:var(--radius-sm);">
+                <p style="font-size:0.82rem;font-weight:800;color:var(--mpk-navy);margin-bottom:4px;">Leveranser</p>
+                <p style="font-size:0.82rem;color:var(--mpk-muted);line-height:1.6;">AI-policydokument, etterlevelsesanalyse, dataklassifiseringsrammeverk, tilgangsstyringsmodell og governancerapportering.</p>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- end timeline -->
+      </div>
+
+      <!-- LEVERANSEMODELLER -->
+      <div style="margin-top:56px;">
+        <p class="section-label">Leveransemodeller</p>
+        <h2 class="section-title" style="margin-bottom:8px;">Vi tilpasser oss der MPK er</h2>
+        <p class="section-lead" style="margin-bottom:28px;">De fleste starter som prosjekt eller workshopserie og utvikler seg til et langsiktig samarbeid.</p>
+        <div class="license-grid">
+          <div class="lic-card">
+            <div class="lic-title">Prosjekt</div>
+            <div class="lic-sub">Avgrenset leveranse</div>
+            <ul class="lic-list">
+              <li>Tydelig scope og milepæler</li>
+              <li>Passer for ett konkret initiativ</li>
+              <li>Fast pris og tidsramme</li>
+            </ul>
+          </div>
+          <div class="lic-card">
+            <div class="lic-title">Workshopserie</div>
+            <div class="lic-sub">4–8 uker</div>
+            <ul class="lic-list">
+              <li>Strukturerte sesjoner</li>
+              <li>Kompetansebygging og samskaping</li>
+              <li>Egnet for Champions-program</li>
+            </ul>
+          </div>
+          <div class="lic-card">
+            <div class="lic-title">Retainer</div>
+            <div class="lic-sub">Løpende samarbeid</div>
+            <ul class="lic-list">
+              <li>Strategisk AI-partnerskap</li>
+              <li>Kontinuerlig oppfølging og utvikling</li>
+              <li>Skaleres etter behov</li>
+            </ul>
+          </div>
+          <div class="lic-card recommended">
+            <div class="lic-badge">Vanligst</div>
+            <div class="lic-title">Kombinert</div>
+            <div class="lic-sub">Prosjekt → Retainer</div>
+            <ul class="lic-list">
+              <li>Start med avgrenset leveranse</li>
+              <li>Utvikles til langsiktig samarbeid</li>
+              <li>Gir både tidlige gevinster og varig kapabilitet</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- NESTE STEG -->
+      <div style="background:var(--mpk-navy);border-radius:var(--radius-lg);padding:48px 40px;margin-top:56px;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 70% at 90% 20%,rgba(212,80,10,0.2),transparent 60%);pointer-events:none;"></div>
+        <p class="section-label" style="color:var(--mpk-orange);position:relative;z-index:1;">Kom i gang</p>
+        <h2 style="font-weight:800;font-size:1.8rem;color:#fff;margin-bottom:32px;position:relative;z-index:1;">Fire steg til første milepæl</h2>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative;z-index:1;">
+          <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-md);padding:20px;">
+            <div style="font-size:1.6rem;font-weight:800;color:var(--mpk-orange);margin-bottom:8px;">01</div>
+            <div style="font-size:0.9rem;font-weight:700;color:#fff;">Kartleggingssamtale</div>
+            <p style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-top:6px;">Forstå hvor MPK er i dag og hva som gir størst verdi først</p>
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-md);padding:20px;">
+            <div style="font-size:1.6rem;font-weight:800;color:var(--mpk-orange);margin-bottom:8px;">02</div>
+            <div style="font-size:0.9rem;font-weight:700;color:#fff;">Modenhetsvurdering</div>
+            <p style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-top:6px;">Kartlegg nåværende KI-bruk, kompetanse og organisatorisk beredskap</p>
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-md);padding:20px;">
+            <div style="font-size:1.6rem;font-weight:800;color:var(--mpk-orange);margin-bottom:8px;">03</div>
+            <div style="font-size:0.9rem;font-weight:700;color:#fff;">Definering av pilotscope</div>
+            <p style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-top:6px;">Velg én tjeneste og én avdeling som gir rask, målbar gevinst</p>
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-md);padding:20px;">
+            <div style="font-size:1.6rem;font-weight:800;color:var(--mpk-orange);margin-bottom:8px;">04</div>
+            <div style="font-size:0.9rem;font-weight:700;color:#fff;">Oppstart</div>
+            <p style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-top:6px;">Team på plass, første milepæl definert og leveranse i gang</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div><!-- end page-adoption -->
+
+
 <!-- FOOTER (shared) -->
 <footer>
   <p><strong>Maritim Pensjonskasse × Claude</strong> &nbsp;·&nbsp; Mulighetsrommet for kunstig intelligens i MPKs virksomhet.</p>
@@ -960,16 +1211,6 @@ function toggleMenu() {
   var links = document.querySelector('.nav-links');
   if (!links) return;
   var visible = links.style.display === 'flex';
-  links.style.display = visible ? 'none' : 'flex';
-  links.style.flexDirection = 'column';
-  links.style.position = 'absolute';
-  links.style.top = '64px';
-  links.style.left = '0';
-  links.style.right = '0';
-  links.style.background = '#1b3060';
-  links.style.padding = '12px 1.25rem';
-  links.style.gap = '4px';
-  links.style.zIndex = '200';
   if (visible) {
     links.style.display = '';
     links.style.position = '';
@@ -977,6 +1218,17 @@ function toggleMenu() {
     links.style.background = '';
     links.style.padding = '';
     links.style.flexDirection = '';
+  } else {
+    links.style.display = 'flex';
+    links.style.flexDirection = 'column';
+    links.style.position = 'absolute';
+    links.style.top = '64px';
+    links.style.left = '0';
+    links.style.right = '0';
+    links.style.background = '#1b3060';
+    links.style.padding = '12px 1.25rem';
+    links.style.gap = '4px';
+    links.style.zIndex = '200';
   }
 }
 
