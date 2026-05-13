@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mestergruppen × Claude – Mulighetsrommet</title>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brand-navy:   #1a3a2e;
+  --brand-green:  #2d6a4f;
+  --brand-accent: #e07b2a;
+  --brand-lt:     #f0f5f2;
+  --brand-border: #c3d9cd;
+  --brand-muted:  #4a6058;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 99px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Mulish', sans-serif;
+  background: #fff;
+  color: #1a1a1a;
+  overflow-x: clip;
+  overscroll-behavior-y: contain;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid var(--brand-border);
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+.nav-logo {
+  font-weight: 900; font-size: 1.1rem; color: var(--brand-navy);
+  display: flex; align-items: center; gap: 10px;
+}
+.nav-logo .logo-dot {
+  width: 28px; height: 28px;
+  background: var(--brand-accent);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 0.75rem; font-weight: 900;
+}
+.nav-links { display: flex; gap: 8px; }
+.nav-btn {
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  border: none; cursor: pointer;
+  font-family: 'Mulish', sans-serif;
+  font-weight: 700; font-size: 0.88rem;
+  background: transparent; color: var(--brand-muted);
+  transition: all 0.2s;
+}
+.nav-btn:hover { background: var(--brand-lt); color: var(--brand-navy); }
+.nav-btn.active { background: var(--brand-navy); color: #fff; }
+.nav-tag {
+  font-size: 0.7rem; font-weight: 700;
+  background: var(--brand-lt); color: var(--brand-green);
+  padding: 3px 10px; border-radius: var(--radius-pill);
+  letter-spacing: 0.03em;
+}
+
+/* HERO */
+.hero {
+  background: var(--brand-navy);
+  padding: 72px 40px 0;
+  position: relative; overflow: hidden;
+}
+.hero-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;
+}
+.hero-eyebrow {
+  font-size: 0.75rem; font-weight: 800;
+  color: var(--brand-accent); letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.hero h1 {
+  font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1.1;
+  margin-bottom: 18px;
+}
+.hero h1 em { color: var(--brand-accent); font-style: normal; }
+.hero-sub {
+  font-size: 1.05rem; color: rgba(255,255,255,0.72); line-height: 1.65;
+  margin-bottom: 28px;
+}
+.hero-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.hero-chip {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius-pill);
+  padding: 5px 14px;
+  font-size: 0.78rem; font-weight: 700; color: rgba(255,255,255,0.85);
+}
+.hero-visual {
+  display: flex; flex-direction: column; gap: 14px;
+  padding-bottom: 40px;
+}
+.stat-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: var(--radius-md);
+  padding: 18px 22px;
+  display: flex; align-items: center; gap: 16px;
+  backdrop-filter: blur(8px);
+  transition: transform 0.25s;
+}
+.stat-card:hover { transform: translateX(4px); }
+.stat-card:nth-child(2) { margin-left: 20px; }
+.stat-card:nth-child(3) { margin-left: 40px; }
+.stat-card:nth-child(4) { margin-left: 24px; }
+.stat-icon {
+  width: 42px; height: 42px; border-radius: 10px;
+  background: rgba(224,123,42,0.2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.stat-val { font-size: 1.5rem; font-weight: 900; color: #fff; line-height: 1; }
+.stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-top: 3px; }
+
+/* WAVE */
+.wave-wrap { background: var(--brand-navy); line-height: 0; }
+.wave-wrap svg { display: block; width: 100%; }
+
+/* SECTIONS */
+section { padding: 72px 40px; }
+section.alt { background: var(--brand-lt); }
+.sec-inner { max-width: 1100px; margin: 0 auto; }
+.sec-label {
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--brand-accent); margin-bottom: 10px;
+}
+.sec-title {
+  font-size: 2rem; font-weight: 900; color: var(--brand-navy); margin-bottom: 10px;
+}
+.sec-sub {
+  font-size: 1rem; color: var(--brand-muted); line-height: 1.6; max-width: 640px;
+  margin-bottom: 40px;
+}
+
+/* OPP GRID */
+.opp-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+}
+.opp-card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--brand-border);
+  padding: 28px 24px;
+  position: relative; overflow: hidden;
+  transition: transform 0.25s, box-shadow 0.25s;
+  cursor: default;
+}
+.opp-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--brand-accent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s;
+}
+.opp-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.09); }
+.opp-card:hover::before { transform: scaleX(1); }
+.opp-num {
+  font-size: 2.5rem; font-weight: 900;
+  color: var(--brand-border);
+  line-height: 1; margin-bottom: 10px;
+}
+.opp-priority {
+  display: inline-block;
+  font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px; border-radius: var(--radius-pill);
+  margin-bottom: 12px;
+}
+.priority-high { background: #fee2e2; color: #b91c1c; }
+.priority-mid  { background: #fef3c7; color: #92400e; }
+.priority-low  { background: #d1fae5; color: #065f46; }
+.opp-card h3 { font-size: 1rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 8px; }
+.opp-card p  { font-size: 0.88rem; color: var(--brand-muted); line-height: 1.6; }
+.opp-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.tag {
+  background: var(--brand-lt); color: var(--brand-green);
+  font-size: 0.7rem; font-weight: 700;
+  padding: 3px 10px; border-radius: var(--radius-pill);
+}
+
+/* TECH STACK */
+.tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.tech-col h4 {
+  font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--brand-muted); margin-bottom: 16px;
+}
+.tech-items { display: flex; flex-direction: column; gap: 10px; }
+.tech-item {
+  display: flex; align-items: center; gap: 12px;
+  background: #fff; border: 1px solid var(--brand-border);
+  border-radius: var(--radius-sm); padding: 12px 16px;
+}
+.tech-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.tech-dot.confirmed { background: #10b981; }
+.tech-dot.likely    { background: #f59e0b; }
+.tech-item span { font-size: 0.88rem; font-weight: 700; color: var(--brand-navy); }
+.tech-item small { font-size: 0.75rem; color: var(--brand-muted); margin-left: auto; }
+
+/* RISK GRID */
+.risk-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+}
+.risk-card {
+  background: #fff; border: 1px solid var(--brand-border);
+  border-radius: var(--radius-md); padding: 24px;
+  border-left: 4px solid var(--brand-accent);
+}
+.risk-card h4 { font-size: 0.95rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 8px; }
+.risk-card p { font-size: 0.85rem; color: var(--brand-muted); line-height: 1.6; }
+
+/* SPØRSMÅL */
+.questions-wrap {
+  background: var(--brand-navy); border-radius: var(--radius-lg);
+  padding: 40px 44px;
+}
+.questions-wrap h3 {
+  font-size: 1.3rem; font-weight: 900; color: #fff; margin-bottom: 28px;
+}
+.q-list { list-style: none; display: flex; flex-direction: column; gap: 18px; }
+.q-item {
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.q-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--brand-accent); color: #fff;
+  font-size: 0.8rem; font-weight: 900;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  margin-top: 1px;
+}
+.q-text { font-size: 0.92rem; color: rgba(255,255,255,0.85); line-height: 1.6; }
+
+/* ===== ACTIVATION PAGE ===== */
+.act-hero {
+  background: linear-gradient(135deg, var(--brand-navy) 0%, #2d6a4f 100%);
+  padding: 72px 40px 0;
+}
+.act-hero-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
+  padding-bottom: 60px;
+}
+.act-hero h1 { font-size: 2.6rem; font-weight: 900; color: #fff; line-height: 1.15; margin-bottom: 16px; }
+.act-hero h1 em { color: var(--brand-accent); font-style: normal; }
+.act-hero p { font-size: 1rem; color: rgba(255,255,255,0.72); line-height: 1.7; }
+.act-quote {
+  background: rgba(255,255,255,0.1); border-left: 4px solid var(--brand-accent);
+  border-radius: var(--radius-md); padding: 24px 28px;
+}
+.act-quote p { font-size: 1rem; font-weight: 600; color: #fff; line-height: 1.65; font-style: italic; }
+.act-quote cite { display: block; margin-top: 10px; font-size: 0.78rem; color: rgba(255,255,255,0.5); font-style: normal; }
+
+/* TIMELINE */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.phase { display: flex; gap: 24px; }
+.phase-left { display: flex; flex-direction: column; align-items: center; }
+.phase-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--brand-accent); flex-shrink: 0;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 3px var(--brand-accent);
+  margin-top: 4px;
+}
+.phase-line {
+  width: 2px; background: var(--brand-border); flex: 1; margin: 8px 0;
+}
+.phase:last-child .phase-line { display: none; }
+.phase-content { padding-bottom: 40px; }
+.phase-num {
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--brand-accent); margin-bottom: 4px;
+}
+.phase-content h3 {
+  font-size: 1.05rem; font-weight: 900; color: var(--brand-navy); margin-bottom: 8px;
+}
+.phase-content > p {
+  font-size: 0.88rem; color: var(--brand-muted); line-height: 1.6; margin-bottom: 14px;
+}
+.phase-items { display: flex; flex-direction: column; gap: 8px; }
+.phase-item { display: flex; align-items: flex-start; gap: 10px; }
+.phase-item-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--brand-green); flex-shrink: 0; margin-top: 6px;
+}
+.phase-item p { font-size: 0.85rem; color: var(--brand-muted); line-height: 1.5; }
+
+/* LICENSE */
+.license-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.lic-card {
+  background: #fff; border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg); padding: 28px;
+  position: relative;
+}
+.lic-card.recommended {
+  border-color: var(--brand-accent);
+  box-shadow: 0 0 0 2px rgba(224,123,42,0.2);
+}
+.lic-badge {
+  display: inline-block;
+  background: var(--brand-accent); color: #fff;
+  font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 4px 12px; border-radius: var(--radius-pill);
+  margin-bottom: 14px;
+}
+.lic-card h3 { font-size: 1rem; font-weight: 900; color: var(--brand-navy); margin-bottom: 10px; }
+.lic-card ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.lic-card ul li {
+  font-size: 0.85rem; color: var(--brand-muted);
+  padding-left: 16px; position: relative; line-height: 1.5;
+}
+.lic-card ul li::before { content: '→'; position: absolute; left: 0; color: var(--brand-accent); }
+
+/* ROLLER */
+.roles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.role-card {
+  background: #fff; border: 1px solid var(--brand-border);
+  border-radius: var(--radius-md); padding: 24px;
+  text-align: center;
+}
+.role-icon {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--brand-lt);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; margin: 0 auto 14px;
+}
+.role-card h4 { font-size: 0.95rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 6px; }
+.role-card p { font-size: 0.82rem; color: var(--brand-muted); line-height: 1.6; }
+
+/* LAUNCH */
+.launch-box {
+  background: var(--brand-lt); border-radius: var(--radius-lg);
+  padding: 36px 40px;
+}
+.launch-box h3 { font-size: 1.1rem; font-weight: 900; color: var(--brand-navy); margin-bottom: 20px; }
+.checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.check-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.88rem; color: var(--brand-muted);
+}
+.check-item::before {
+  content: '✓'; color: #10b981; font-weight: 900; font-size: 0.9rem; flex-shrink: 0;
+}
+
+/* RESOURCES */
+.res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.res-card {
+  background: var(--brand-navy); border-radius: var(--radius-md);
+  padding: 22px; color: #fff;
+}
+.res-card h4 { font-size: 0.9rem; font-weight: 800; margin-bottom: 6px; }
+.res-card p { font-size: 0.8rem; color: rgba(255,255,255,0.65); line-height: 1.55; }
+
+/* BACK BUTTON */
+.back-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--brand-lt); color: var(--brand-navy);
+  border: none; cursor: pointer;
+  font-family: 'Mulish', sans-serif;
+  font-weight: 700; font-size: 0.88rem;
+  padding: 8px 18px; border-radius: var(--radius-pill);
+  transition: background 0.2s;
+}
+.back-btn:hover { background: var(--brand-border); }
+
+/* FOOTER */
+footer {
+  background: var(--brand-navy);
+  padding: 24px 40px;
+  text-align: center;
+  font-size: 0.78rem; color: rgba(255,255,255,0.45);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .hero-inner, .act-hero-inner { grid-template-columns: 1fr; }
+  .opp-grid { grid-template-columns: 1fr 1fr; }
+  .risk-grid { grid-template-columns: 1fr; }
+  .license-grid { grid-template-columns: 1fr; }
+  .roles-grid { grid-template-columns: 1fr 1fr; }
+  .res-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 720px) {
+  nav { backdrop-filter: none; -webkit-backdrop-filter: none; padding: 0 20px; }
+  section { padding: 48px 20px; }
+  .hero, .act-hero { padding: 48px 20px 0; }
+  .opp-grid { grid-template-columns: 1fr; }
+  .hero h1, .act-hero h1 { font-size: 2rem; }
+  .tech-grid { grid-template-columns: 1fr; }
+  .checklist { grid-template-columns: 1fr; }
+  .roles-grid { grid-template-columns: 1fr; }
+  .res-grid { grid-template-columns: 1fr; }
+  .questions-wrap { padding: 28px 24px; }
+}
+/* ADOPTION PAGE */
+.adp-hero {
+  background: linear-gradient(135deg, #0f2027 0%, #1a3a2e 50%, #2d6a4f 100%);
+  padding: 72px 40px 0;
+}
+.adp-hero-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center;
+  padding-bottom: 60px;
+}
+.adp-hero h1 { font-size: 2.6rem; font-weight: 900; color: #fff; line-height: 1.12; margin-bottom: 16px; }
+.adp-hero h1 em { color: var(--brand-accent); font-style: normal; }
+.adp-hero-sub { font-size: 1rem; color: rgba(255,255,255,0.72); line-height: 1.7; margin-bottom: 24px; }
+.adp-hero-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--brand-accent); color: #fff;
+  border: none; cursor: pointer;
+  font-family: 'Mulish', sans-serif;
+  font-weight: 800; font-size: 0.92rem;
+  padding: 12px 26px; border-radius: var(--radius-pill);
+  transition: opacity 0.2s;
+}
+.adp-hero-cta:hover { opacity: 0.85; }
+
+/* Challenge box */
+.challenge-box {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+}
+.challenge-box h4 {
+  font-size: 0.78rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--brand-accent); margin-bottom: 16px;
+}
+.challenge-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.challenge-list li {
+  font-size: 0.85rem; color: rgba(255,255,255,0.8); line-height: 1.55;
+  padding-left: 18px; position: relative;
+}
+.challenge-list li::before { content: '→'; position: absolute; left: 0; color: var(--brand-accent); }
+
+/* Three layers */
+.layers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.layer-card {
+  border-radius: var(--radius-lg); padding: 32px 28px;
+  position: relative; overflow: hidden;
+}
+.layer-card.l1 { background: var(--brand-navy); }
+.layer-card.l2 { background: var(--brand-green); }
+.layer-card.l3 { background: #1a2e5a; }
+.layer-num {
+  font-size: 3rem; font-weight: 900;
+  color: rgba(255,255,255,0.12); line-height: 1;
+  margin-bottom: 4px;
+}
+.layer-badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9);
+  padding: 3px 10px; border-radius: var(--radius-pill); margin-bottom: 12px;
+}
+.layer-card h3 { font-size: 1.05rem; font-weight: 900; color: #fff; margin-bottom: 10px; }
+.layer-card p  { font-size: 0.85rem; color: rgba(255,255,255,0.72); line-height: 1.6; }
+.layer-note {
+  margin-top: 20px; font-size: 0.8rem; font-style: italic;
+  color: var(--brand-muted); text-align: center;
+}
+
+/* Services */
+.services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.service-card {
+  background: #fff; border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg); padding: 32px 28px;
+  transition: box-shadow 0.25s, transform 0.25s;
+}
+.service-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.08); }
+.service-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: var(--brand-lt);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; margin-bottom: 16px;
+}
+.service-card h3 { font-size: 1rem; font-weight: 900; color: var(--brand-navy); margin-bottom: 8px; }
+.service-card > p { font-size: 0.85rem; color: var(--brand-muted); line-height: 1.6; font-style: italic; margin-bottom: 14px; }
+.service-list { list-style: none; display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+.service-list li {
+  font-size: 0.83rem; color: var(--brand-muted); padding-left: 16px;
+  position: relative; line-height: 1.5;
+}
+.service-list li::before { content: '·'; position: absolute; left: 4px; color: var(--brand-accent); font-weight: 900; }
+.service-deliverables {
+  background: var(--brand-lt); border-radius: var(--radius-sm);
+  padding: 12px 16px;
+}
+.service-deliverables span {
+  display: block; font-size: 0.68rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--brand-green); margin-bottom: 4px;
+}
+.service-deliverables p { font-size: 0.78rem; color: var(--brand-muted); line-height: 1.55; }
+
+/* Delivery models */
+.delivery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.delivery-card {
+  background: #fff; border: 1px solid var(--brand-border);
+  border-radius: var(--radius-md); padding: 22px 20px;
+  text-align: center;
+}
+.delivery-card .d-icon { font-size: 1.8rem; margin-bottom: 10px; }
+.delivery-card h4 { font-size: 0.9rem; font-weight: 900; color: var(--brand-navy); margin-bottom: 6px; }
+.delivery-card p { font-size: 0.78rem; color: var(--brand-muted); line-height: 1.55; }
+
+/* Why SS */
+.why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.why-card {
+  background: var(--brand-navy); border-radius: var(--radius-md); padding: 24px;
+}
+.why-card .w-icon { font-size: 1.5rem; margin-bottom: 10px; }
+.why-card h4 { font-size: 0.88rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
+.why-card p { font-size: 0.78rem; color: rgba(255,255,255,0.62); line-height: 1.55; }
+
+/* Next steps */
+.nextstep-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.nextstep-card {
+  background: var(--brand-lt); border-radius: var(--radius-md); padding: 22px 18px;
+  text-align: center; border: 1px solid var(--brand-border);
+}
+.nextstep-card .ns-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--brand-accent); color: #fff;
+  font-size: 0.85rem; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+}
+.nextstep-card h4 { font-size: 0.88rem; font-weight: 800; color: var(--brand-navy); }
+
+@media (max-width: 900px) {
+  .adp-hero-inner { grid-template-columns: 1fr; }
+  .layers-grid { grid-template-columns: 1fr; }
+  .services-grid { grid-template-columns: 1fr; }
+  .delivery-grid { grid-template-columns: 1fr 1fr; }
+  .why-grid { grid-template-columns: 1fr 1fr; }
+  .nextstep-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .delivery-grid { grid-template-columns: 1fr; }
+  .why-grid { grid-template-columns: 1fr; }
+  .nextstep-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="logo-dot">AI</div>
+    Mestergruppen × Claude
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn active" id="btn-1" onclick="showPage(1)">Mulighetsrommet</button>
+    <button class="nav-btn" id="btn-2" onclick="showPage(2)">Claude Activation</button>
+    <button class="nav-btn" id="btn-3" onclick="showPage(3)">Claude Adoption</button>
+  </div>
+  <span class="nav-tag">Konfidensielt</span>
+</nav>
+
+<!-- ===================== PAGE 1 ===================== -->
+<div class="page active" id="page-1">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <p class="hero-eyebrow">Claude Activation · Kartlegging 2025</p>
+        <h1>Mestergruppen<br><em>møter Claude</em></h1>
+        <p class="hero-sub">
+          Et av Skandinavias største konsern innen byggevare, boligbygging og overflatebehandling
+          har 20+ kjeder, 1 400+ medlemsbedrifter og 1 600 medarbeidere i Norge.
+          Her er mulighetsrommet for Anthropics Claude.
+        </p>
+        <div class="hero-chips">
+          <span class="hero-chip">Privat konsern</span>
+          <span class="hero-chip">Eier: Ferd AS</span>
+          <span class="hero-chip">Skandinavia</span>
+          <span class="hero-chip">Bygg &amp; anlegg</span>
+          <span class="hero-chip">Etablert 1975</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e07b2a" stroke-width="2.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div>
+            <div class="stat-val">ca. 1 600</div>
+            <div class="stat-label">Medarbeidere i Norge</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e07b2a" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <div>
+            <div class="stat-val">18 mrd</div>
+            <div class="stat-label">Konsernomseting 2024 (NOK)</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e07b2a" stroke-width="2.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div>
+            <div class="stat-val">20+</div>
+            <div class="stat-label">Kjeder i Norge og Sverige</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e07b2a" stroke-width="2.5" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <div>
+            <div class="stat-val">1 400+</div>
+            <div class="stat-label">Medlemsbedrifter i konsernet</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="wave-wrap">
+    <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" height="60">
+      <path d="M0,0 C360,60 1080,0 1440,50 L1440,0 Z" fill="#f0f5f2"/>
+    </svg>
+  </div>
+
+  <!-- USE CASES -->
+  <section class="alt">
+    <div class="sec-inner">
+      <p class="sec-label">Use-caser</p>
+      <h2 class="sec-title">Hvor Claude gir verdi</h2>
+      <p class="sec-sub">Basert på Mestergruppens konsernstruktur, kjededrift og strategiske utfordringer identifiserer vi seks konkrete bruksområder med ulik tidshorisont.</p>
+      <div class="opp-grid">
+
+        <div class="opp-card">
+          <div class="opp-num">01</div>
+          <div class="opp-priority priority-high">Høy prioritet</div>
+          <h3>Kjede- og driftsdokumentasjon</h3>
+          <p>Claude hjelper kjedeledere med å utarbeide rutinedokumenter, standarder og retningslinjer på tvers av Byggtorget, XL-BYGG, Fargerike og øvrige kjeder. Gir konsistent kvalitet uten å belaste sentraladministrasjonen.</p>
+          <div class="opp-tags"><span class="tag">Effektivitet</span><span class="tag">Standardisering</span></div>
+        </div>
+
+        <div class="opp-card">
+          <div class="opp-num">02</div>
+          <div class="opp-priority priority-high">Høy prioritet</div>
+          <h3>Innsalg og tilbudsstøtte</h3>
+          <p>Huskjedene (Mesterhus, Nordbohus, BoligPartner m.fl.) produserer store mengder tilbuds- og kontraktstekster. Claude strukturerer og kvalitetssikrer disse, og frigjør tid for salgsrådgivere og prosjektledere.</p>
+          <div class="opp-tags"><span class="tag">Salg</span><span class="tag">Boligbygging</span></div>
+        </div>
+
+        <div class="opp-card">
+          <div class="opp-num">03</div>
+          <div class="opp-priority priority-high">Høy prioritet</div>
+          <h3>HMS og bærekraftsrapportering</h3>
+          <p>Mestergruppen har eksplisitte mål om null skader og oppfyllelse av Åpenhetsloven. Claude kan automatisere innhenting og strukturering av HMS-data fra datterselskaper og kjeder, og forenkle rapportering til ledelse og myndigheter.</p>
+          <div class="opp-tags"><span class="tag">HMS</span><span class="tag">Åpenhetsloven</span><span class="tag">ESG</span></div>
+        </div>
+
+        <div class="opp-card">
+          <div class="opp-num">04</div>
+          <div class="opp-priority priority-mid">Middels prioritet</div>
+          <h3>Onboarding av nye kjeder og partnere</h3>
+          <p>Konsernet vokser aktivt (WIFA-oppkjøp 2024, Sweden-ekspansjon). Claude kan fungere som en intelligent onboardingassistent som svarer på spørsmål om konsernets systemer, rutiner og verdier for nye kjeder og partnere.</p>
+          <div class="opp-tags"><span class="tag">Vekst</span><span class="tag">Kjededrift</span></div>
+        </div>
+
+        <div class="opp-card">
+          <div class="opp-num">05</div>
+          <div class="opp-priority priority-mid">Middels prioritet</div>
+          <h3>Nordisk kommunikasjon og oversettelse</h3>
+          <p>Med operasjoner i Norge og Sverige produserer konsernadministrasjonen løpende kommunikasjon på to språk. Claude oversetter og tilpasser internt innhold, investorkommunikasjon og pressemeldinger effektivt og konsistent.</p>
+          <div class="opp-tags"><span class="tag">Norsk</span><span class="tag">Svensk</span><span class="tag">Internkommunikasjon</span></div>
+        </div>
+
+        <div class="opp-card">
+          <div class="opp-num">06</div>
+          <div class="opp-priority priority-low">Lengre sikt</div>
+          <h3>Leverandør- og innkjøpsanalyse</h3>
+          <p>Mestergruppen har en stor innkjøpsfunksjon med leverandørkrav knyttet til etikk, kvalitet og miljø. Claude kan assistere med analyse av leverandørdokumentasjon, due diligence og overholdelse av konsernets innkjøpspolicy.</p>
+          <div class="opp-tags"><span class="tag">Innkjøp</span><span class="tag">API</span><span class="tag">Fagsystem</span></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH STACK -->
+  <section>
+    <div class="sec-inner">
+      <p class="sec-label">Teknologi</p>
+      <h2 class="sec-title">Tech-stack og integrasjonspunkter</h2>
+      <p class="sec-sub">Kjent infrastruktur i Mestergruppen og sannsynlige systemer basert på konsernets størrelse og bransje.</p>
+      <div class="tech-grid">
+        <div class="tech-col">
+          <h4>Bekreftet / høy sannsynlighet</h4>
+          <div class="tech-items">
+            <div class="tech-item"><div class="tech-dot confirmed"></div><span>Microsoft 365</span><small>E-post, Teams, SharePoint</small></div>
+            <div class="tech-item"><div class="tech-dot confirmed"></div><span>BlueJam OKR</span><small>Strategioppfølging</small></div>
+            <div class="tech-item"><div class="tech-dot confirmed"></div><span>NOBB-plattformen</span><small>Innkjøpsdokumentasjon</small></div>
+            <div class="tech-item"><div class="tech-dot confirmed"></div><span>Reachmee</span><small>Rekrutteringssystem</small></div>
+            <div class="tech-item"><div class="tech-dot likely"></div><span>ERP (SAP / Visma)</span><small>Økonomi og logistikk</small></div>
+          </div>
+        </div>
+        <div class="tech-col">
+          <h4>Sannsynlig gitt konsernstørrelse</h4>
+          <div class="tech-items">
+            <div class="tech-item"><div class="tech-dot likely"></div><span>Fagsystem kjededrift</span><small>Ordrehåndtering, POS</small></div>
+            <div class="tech-item"><div class="tech-dot likely"></div><span>CRM-system</span><small>Medlems- og kundehåndtering</small></div>
+            <div class="tech-item"><div class="tech-dot likely"></div><span>BI / rapporteringsverktøy</span><small>Power BI eller tilsvarende</small></div>
+            <div class="tech-item"><div class="tech-dot likely"></div><span>Skyinfrastruktur</span><small>Azure eller AWS</small></div>
+            <div class="tech-item"><div class="tech-dot likely"></div><span>Dokumenthåndtering</span><small>SharePoint / Teams</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPLIANCE -->
+  <section class="alt">
+    <div class="sec-inner">
+      <p class="sec-label">Compliance og rammeverk</p>
+      <h2 class="sec-title">Hensyn og risikoer</h2>
+      <p class="sec-sub">Mestergruppen er et privateide konsern (Ferd AS) med virksomhet i to land. Compliance-profilen er moderat, men med klare krav.</p>
+      <div class="risk-grid">
+        <div class="risk-card">
+          <h4>GDPR og personvern</h4>
+          <p>Konsernet behandler persondata for 1 600+ ansatte og data fra tusenvis av kunder og partnere. Databehandleravtale med Anthropic er påkrevd. Claude.ai Teams eller Enterprise anbefales for å sikre at treningsdata-unntak er på plass.</p>
+        </div>
+        <div class="risk-card">
+          <h4>Åpenhetsloven</h4>
+          <p>Mestergruppen er eksplisitt forpliktet til Åpenhetsloven og stiller krav til leverandørers etiske atferd. Claude kan støtte due diligence-prosesser, men menneskelig godkjenning av leverandørvurderinger er påkrevd.</p>
+        </div>
+        <div class="risk-card">
+          <h4>EU AI Act (forventet)</h4>
+          <p>Som skandinavisk konsern med EU-eksponering vil EU AI Act gjelde fra 2026. Bruk av Claude til HR-beslutninger (rekruttering, vurdering) kan klassifiseres som «høy-risiko» og krever transparens og menneskelig kontroll.</p>
+        </div>
+        <div class="risk-card">
+          <h4>Informasjonssikkerhet</h4>
+          <p>Konsernets strategiske og kommersielle informasjon (innkjøpspriser, kjededata, M&amp;A-planer) er sensitiv. Claude Enterprise med nulldatalagring (zero data retention) er anbefalt konfigurasjon for konsernadministrasjonen.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPØRSMÅL -->
+  <section>
+    <div class="sec-inner">
+      <div class="questions-wrap">
+        <h3>Diskusjonspunkter</h3>
+        <ul class="q-list">
+          <li class="q-item">
+            <div class="q-num">1</div>
+            <p class="q-text">Dere bruker BlueJam for OKR og strategioppfølging. Er KI-assistanse vurdert i selve strategiarbeidet, for eksempel i produksjon av initiativdokumenter eller analyse av måloppnåelse?</p>
+          </li>
+          <li class="q-item">
+            <div class="q-num">2</div>
+            <p class="q-text">Hvilke verktøy bruker kjededirektørene i dag for å produsere rutinedokumenter, standarder og opplæringsmateriell? Er dette standardisert på tvers av kjedene, eller løser hver kjede dette selv?</p>
+          </li>
+          <li class="q-item">
+            <div class="q-num">3</div>
+            <p class="q-text">Mestergruppen har eksplisitte krav til leverandører gjennom Åpenhetsloven. Hvilke systemer og prosesser brukes i dag for due diligence og leverandørdokumentasjon, og er dette skalerbart med konsernets vekst?</p>
+          </li>
+          <li class="q-item">
+            <div class="q-num">4</div>
+            <p class="q-text">Dere er aktive i Sverige og vokser gjennom oppkjøp. Hvor mye tid brukes på oversettelse og tilpasning av internt innhold mellom norsk og svensk, og er dette en smertefull flaskehals i praksis?</p>
+          </li>
+          <li class="q-item">
+            <div class="q-num">5</div>
+            <p class="q-text">Har Mestergruppen en eksisterende KI-policy for ansatte, eller er dette under utarbeidelse? Og er det Microsoft Copilot eller andre KI-verktøy som allerede er rullet ut i konsernadministrasjonen?</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="alt" style="text-align:center; padding: 48px 40px;">
+    <div class="sec-inner">
+      <h2 class="sec-title" style="margin:0 auto 12px;">Klar for neste steg?</h2>
+      <p style="color:var(--brand-muted); margin-bottom: 28px; font-size:0.95rem;">Se hvordan en strukturert Claude Activation ser ut for Mestergruppen.</p>
+      <button onclick="showPage(2)" style="background:var(--brand-accent); color:#fff; border:none; padding: 14px 32px; border-radius:var(--radius-pill); font-family:'Mulish',sans-serif; font-weight:800; font-size:1rem; cursor:pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Se Claude Activation →</button>
+    </div>
+  </section>
+
+  <footer>Utarbeidet av Sopra Steria · Konfidensielt · Mai 2025</footer>
+</div>
+
+<!-- ===================== PAGE 2 ===================== -->
+<div class="page" id="page-2">
+
+  <!-- ACT HERO -->
+  <div class="act-hero">
+    <div class="act-hero-inner">
+      <div>
+        <button class="back-btn" onclick="showPage(1)">← Tilbake til mulighetsrommet</button>
+        <br><br>
+        <p class="hero-eyebrow">Claude Activation</p>
+        <h1>Fra mulighet<br>til <em>hverdagsverktøy</em></h1>
+        <p style="color:rgba(255,255,255,0.72); font-size:1rem; line-height:1.7;">En strukturert utrulling av Claude i Mestergruppens konsernadministrasjon gir rask tid til verdi og bygger intern kompetanse som skalerer til hele konsernfamilien.</p>
+      </div>
+      <div class="act-quote">
+        <p>«Selskaper som gir sine ansatte tilgang til de beste AI-verktøyene vil ha en avgjørende konkurransefordel. Claude er designet for å styrke menneskelig kapasitet, ikke erstatte den.»</p>
+        <cite>Dario Amodei, CEO, Anthropic</cite>
+      </div>
+    </div>
+  </div>
+  <div class="wave-wrap" style="background: linear-gradient(135deg, var(--brand-navy) 0%, #2d6a4f 100%);">
+    <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" height="60">
+      <path d="M0,0 C360,60 1080,0 1440,50 L1440,0 Z" fill="#f0f5f2"/>
+    </svg>
+  </div>
+
+  <!-- TIMELINE -->
+  <section class="alt">
+    <div class="sec-inner">
+      <p class="sec-label">Faseplan</p>
+      <h2 class="sec-title">Fire faser til full Activation</h2>
+      <p class="sec-sub">En realistisk og lavrisiko tilnærming som starter med kjerneteamet i konsernadministrasjonen og bygger ut til kjedene.</p>
+      <div class="timeline">
+        <div class="phase">
+          <div class="phase-left"><div class="phase-dot"></div><div class="phase-line"></div></div>
+          <div class="phase-content">
+            <p class="phase-num">Fase 1 · Uke 1–2</p>
+            <h3>Administrativt forarbeid</h3>
+            <p>Etabler eierskap, definer suksess og klargjør for lisensering.</p>
+            <div class="phase-items">
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Utnevn en AI-sponsor i konsernledelsen (naturlig: IT-direktøren)</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Definer pilot-gruppe: 15–20 nøkkelbrukere i konsernadministrasjonen</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Klargjør databehandleravtale med Anthropic (GDPR)</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Sett målbare suksesskriterier for pilotering (spart tid, kvalitet)</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-left"><div class="phase-dot"></div><div class="phase-line"></div></div>
+          <div class="phase-content">
+            <p class="phase-num">Fase 2 · Uke 2–3</p>
+            <h3>Lisensstrategi og kontooppsett</h3>
+            <p>Velg riktig lisensmodell og aktiver kontoer for pilotgruppen.</p>
+            <div class="phase-items">
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Velg mellom Claude.ai Teams (pilot) og Enterprise (full utrulling)</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Konfigurer SSO mot Mestergruppens Azure AD / Microsoft 365</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Sett opp workspace-instruksjoner tilpasset Mestergruppens kontekst</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Klar for lansering av pilotgruppe</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-left"><div class="phase-dot"></div><div class="phase-line"></div></div>
+          <div class="phase-content">
+            <p class="phase-num">Fase 3 · Uke 3–6</p>
+            <h3>Opplæring og bruksscenarioer</h3>
+            <p>Bygg intern kompetanse og forankre konkrete use-caser.</p>
+            <div class="phase-items">
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Gjennomfør «Prompt Engineering for Bygg og Kjededrift»-workshop med pilotgruppen</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Utvikle Mestergruppen-spesifikke promptbibliotek (HMS, tilbud, kjededokumenter)</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Mål tidsbesparelse per bruker og bruksfrekvens</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Samle erfaringer og juster bruksscenarioer basert på tilbakemeldinger</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-left"><div class="phase-dot"></div><div class="phase-line"></div></div>
+          <div class="phase-content">
+            <p class="phase-num">Fase 4 · Uke 6+</p>
+            <h3>Utrulling til kjeder og datterselskaper</h3>
+            <p>Skaler suksessen fra konsernadministrasjonen ut til kjedene.</p>
+            <div class="phase-items">
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Identifiser Champions i 3–5 pilotjeder (f.eks. XL-BYGG, Fargerike, Mesterhus)</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Tilpass opplæringsmateriell til kjededrift-kontekst</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Vurder API-integrasjon mot fagsystemer (kjededrift, innkjøp)</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Evaluer full Enterprise-lisens for hele Mestergruppen-familien</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LICENSE -->
+  <section>
+    <div class="sec-inner">
+      <p class="sec-label">Lisensstrategi</p>
+      <h2 class="sec-title">Velg riktig startpunkt</h2>
+      <p class="sec-sub">For et konsern med 1 600 ansatte anbefaler vi en faset tilnærming som reduserer risiko og gir rask verdibevis.</p>
+      <div class="license-grid">
+        <div class="lic-card">
+          <h3>Full utrulling fra dag én</h3>
+          <ul>
+            <li>Alle 1 600 ansatte får tilgang umiddelbart</li>
+            <li>Høy synlighet og signaleffekt internt</li>
+            <li>Krever robust endringsplan og opplæringskapasitet</li>
+            <li>Høyere initial investering</li>
+            <li>Passer dersom konsernet allerede har en tydelig KI-policy</li>
+          </ul>
+        </div>
+        <div class="lic-card recommended">
+          <div class="lic-badge">Anbefalt</div>
+          <h3>Faset tilnærming</h3>
+          <ul>
+            <li>Start med 15–20 nøkkelbrukere i konsernadministrasjonen</li>
+            <li>Bygg intern «best practice» og promptbibliotek</li>
+            <li>Lavere risiko, raskere tid til verdibevis</li>
+            <li>Skalerer til kjeder basert på dokumentert suksess</li>
+            <li>Gir IT-direktøren kontrollert og sporbar innfasning</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROLLER -->
+  <section class="alt">
+    <div class="sec-inner">
+      <p class="sec-label">Roller</p>
+      <h2 class="sec-title">Tre nøkkelroller i Activation</h2>
+      <div class="roles-grid">
+        <div class="role-card">
+          <div class="role-icon">🎓</div>
+          <h4>Claude Trainers</h4>
+          <p>Sopra Steria sin AI-ekspert som leder workshops, bygger promptbibliotek og støtter Mestergruppen gjennom hele aktiviseringsfasen.</p>
+        </div>
+        <div class="role-card">
+          <div class="role-icon">🏆</div>
+          <h4>Champions</h4>
+          <p>2–3 interne «superbrukere» i konsernadministrasjonen og pilotjeder som blir ressurspersoner og ambassadører for Claude internt.</p>
+        </div>
+        <div class="role-card">
+          <div class="role-icon">💡</div>
+          <h4>Power Users</h4>
+          <p>Resten av pilotgruppen. Får opplæring i relevante use-caser: HMS-rapportering, tilbudsdokumentasjon, kjededrift og intern kommunikasjon.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAUNCH DAY -->
+  <section>
+    <div class="sec-inner">
+      <p class="sec-label">Lansering</p>
+      <h2 class="sec-title">Sjekkliste for lanseringsdagen</h2>
+      <div class="launch-box">
+        <h3>Klar for dag én</h3>
+        <div class="checklist">
+          <div class="check-item">SSO og tilganger er konfigurert og testet</div>
+          <div class="check-item">Workspace-instruksjoner er satt opp med Mestergruppen-kontekst</div>
+          <div class="check-item">Promptbibliotek for topp 3 use-caser er klart</div>
+          <div class="check-item">Champions er utpekt og har gjennomført pre-workshop</div>
+          <div class="check-item">Intern kommunikasjon er sendt fra IT-direktør</div>
+          <div class="check-item">GDPR og databehandleravtale er signert</div>
+          <div class="check-item">Bruksretningslinjer for KI er tilgjengeliggjort</div>
+          <div class="check-item">Suksessmåling er definert og sporingsmekanisme er på plass</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section class="alt">
+    <div class="sec-inner">
+      <p class="sec-label">Anthropic-ressurser</p>
+      <h2 class="sec-title">Støtte fra Anthropic</h2>
+      <div class="res-grid">
+        <div class="res-card">
+          <h4>AI Fluency Program</h4>
+          <p>Strukturert læringsforløp som bygger grunnleggende AI-kompetanse hos alle ansatte, tilpasset ulike roller og ansvarsområder.</p>
+        </div>
+        <div class="res-card">
+          <h4>Train the Trainer</h4>
+          <p>Sopra Steria sertifiserer interne Trainers som kan drive egne workshops, slik at kompetansen forblir og vokser internt i Mestergruppen.</p>
+        </div>
+        <div class="res-card">
+          <h4>Claude Enterprise Support</h4>
+          <p>Dedikert kundestøtte, SLA-garantier og tilgang til Anthropics tekniske team for API-integrasjoner og avansert konfigurasjon.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER CTA -->
+  <section style="text-align:center; padding: 48px 40px;">
+    <div class="sec-inner">
+      <h2 class="sec-title" style="margin:0 auto 12px;">Neste steg</h2>
+      <p style="color:var(--brand-muted); margin-bottom: 28px; font-size:0.95rem;">Sopra Steria fasiliterer et oppstartsmøte med IT-direktør og én kjedeleder for å validere use-caser og definere pilotscope.</p>
+      <button onclick="showPage(1)" style="background: var(--brand-navy); color:#fff; border:none; padding: 14px 32px; border-radius:var(--radius-pill); font-family:'Mulish',sans-serif; font-weight:800; font-size:0.95rem; cursor:pointer; transition: opacity 0.2s; margin-right: 12px;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">← Tilbake til mulighetsrommet</button>
+    </div>
+  </section>
+
+  <footer>Utarbeidet av Sopra Steria · Konfidensielt · Mai 2025</footer>
+</div>
+
+<!-- ===================== PAGE 3 ===================== -->
+<div class="page" id="page-3">
+
+  <!-- HERO -->
+  <div class="adp-hero">
+    <div class="adp-hero-inner">
+      <div>
+        <p class="hero-eyebrow">Claude Adoption</p>
+        <h1>Fra lisens til<br><em>konkurransefortrinn</em></h1>
+        <p class="adp-hero-sub">Sopra Steria hjelper deg å hente ut den reelle verdien av Claude i din virksomhet. Teknologien er klar. Spørsmålet er om organisasjonen er det.</p>
+        <button class="adp-hero-cta" onclick="showPage(1)">← Tilbake til mulighetsrommet</button>
+      </div>
+      <div class="challenge-box">
+        <h4>Utfordringen vi hjelper med</h4>
+        <ul class="challenge-list">
+          <li>De fleste virksomheter aktiverer lisensen, men henter ikke ut potensialet</li>
+          <li>Uten struktur blir Claude et personlig verktøy for noen få, ikke en organisatorisk kapabilitet</li>
+          <li>Brukerne mangler felles metoder, maler og tilpassede verktøy som sikrer gjenbruk og kvalitet</li>
+          <li>Uten governance og policy oppstår usikkerhet om hva som er lov, og adopsjon stopper opp</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="wave-wrap" style="background: linear-gradient(135deg, #0f2027 0%, #1a3a2e 50%, #2d6a4f 100%);">
+    <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" height="60">
+      <path d="M0,0 C360,60 1080,0 1440,50 L1440,0 Z" fill="#f0f5f2"/>
+    </svg>
+  </div>
+
+  <!-- TRE LAG -->
+  <section class="alt">
+    <div class="sec-inner">
+      <p class="sec-label">Vår tilnærming</p>
+      <h2 class="sec-title">Tre lag av verdi</h2>
+      <p class="sec-sub">Vi møter deg der du er, og bygger kapabilitet lag for lag. Lagene kan kjøres sekvensielt eller parallelt, avhengig av hvor virksomheten er i dag.</p>
+      <div class="layers-grid">
+        <div class="layer-card l1">
+          <div class="layer-num">01</div>
+          <div class="layer-badge">Lag 1</div>
+          <h3>Kom i gang riktig</h3>
+          <p>Teknisk oppsett, governance, launchkommunikasjon og første bølge av brukere. Basert på Anthropics innføringsrammeverk, tilpasset din virksomhet.</p>
+        </div>
+        <div class="layer-card l2">
+          <div class="layer-num">02</div>
+          <div class="layer-badge">Lag 2</div>
+          <h3>Bygg organisatorisk kapabilitet</h3>
+          <p>Championsprogram, opplæring, brukertilpasning og interne ressurser som sikrer at adopsjon sprer seg og holder seg over tid.</p>
+        </div>
+        <div class="layer-card l3">
+          <div class="layer-num">03</div>
+          <div class="layer-badge">Lag 3</div>
+          <h3>Hent ut det fulle potensialet</h3>
+          <p>Skreddersydde skills, plugins, artifacts, agentløsninger og et internt AI-bibliotek som gjør Claude til et konkurransefortrinn, ikke bare et produktivitetsverktøy.</p>
+        </div>
+      </div>
+      <p class="layer-note">Sopra Steria fyller gapet mellom det Anthropic leverer og det virksomheten trenger for å lykkes.</p>
+    </div>
+  </section>
+
+  <!-- TJENESTER -->
+  <section>
+    <div class="sec-inner">
+      <p class="sec-label">Tjenester</p>
+      <h2 class="sec-title">Fem tjenester – ett sammenhengende tilbud</h2>
+      <p class="sec-sub">Velg det du trenger nå, og bygg videre etter hvert som organisasjonen modnes.</p>
+      <div class="services-grid">
+
+        <div class="service-card">
+          <div class="service-icon">🚀</div>
+          <h3>Aktivering og innføring</h3>
+          <p>En strukturert start som sikrer momentum fra dag én</p>
+          <ul class="service-list">
+            <li>Teknisk oppsett og konfigurasjon av Claude for Enterprise i samarbeid med IT-organisasjonen</li>
+            <li>Definering av lisens- og seatstrategi: hvem får tilgang først, og hvordan skaleres det videre</li>
+            <li>Etablering av AI-governancerammeverk og akseptabel bruk-policy tilpasset sektor og regulatoriske krav</li>
+            <li>Launchkommunikasjon og internt enablement-hub med maler, retningslinjer og ressurser</li>
+            <li>Planlegging og gjennomføring av pilotgrupper som gir tidlige gevinster og sosialt bevis</li>
+          </ul>
+          <div class="service-deliverables">
+            <span>Leveranser</span>
+            <p>Teknisk konfigurasjon, governancedokument, kommunikasjonsplan, pilotrapport og utrullingsplan</p>
+          </div>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🏆</div>
+          <h3>Championsprogram og kompetansebygging</h3>
+          <p>Adopsjon skjer ikke av seg selv. Den bygges innenfra.</p>
+          <ul class="service-list">
+            <li>Identifisering og opplæring av interne Champions og Trainers som driver adopsjon i egne team</li>
+            <li>Tilpasset opplæringsløp basert på Anthropics AI Fluency-materiale, supplert med rolle- og sektorspesifikt innhold</li>
+            <li>Train-the-Trainer-program som gjør organisasjonen selvdrevet over tid</li>
+            <li>Rollespesifikke workshopserier for HR, finans, juss, IT, salg og drift</li>
+            <li>Etablering av interne fellesskap og delekanaler for gjenbruk av maler, erfaringer og gevinster</li>
+          </ul>
+          <div class="service-deliverables">
+            <span>Leveranser</span>
+            <p>Championsprogram med opplæringsplan, tilpasset AI Fluency-kurspakke, workshopdesign per funksjon og måleverktøy</p>
+          </div>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">&#9881;&#65039;</div>
+          <h3>Claude-tilpasning for din virksomhet</h3>
+          <p>Gjenbruk, konsistens og kvalitet – bygget inn fra starten</p>
+          <ul class="service-list">
+            <li>Kartlegging av virksomhetens viktigste brukstilfeller og design av tilpassede Claude-ressurser</li>
+            <li>Utvikling av skreddersydde <strong>prompts og promptbiblioteker</strong> tilpasset roller, prosesser og fagområder</li>
+            <li>Oppsett av <strong>Projects og tilpassede instruksjoner</strong> som gir Claude kontekst om virksomheten og tone</li>
+            <li>Design av <strong>artifacts og maler</strong> for sentrale dokumenttyper: rapporter, tilbud, analyser og presentasjoner</li>
+            <li>Etablering av et <strong>internt AI-bibliotek</strong> for deling, forvaltning og videreutvikling</li>
+          </ul>
+          <div class="service-deliverables">
+            <span>Leveranser</span>
+            <p>Promptbibliotek, tilpassede Projects-oppsett, artifact-maler, merkevaretilpassede outputmaler og forvaltningsrutiner</p>
+          </div>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🤖</div>
+          <h3>Agent Marketplace og automatisering</h3>
+          <p>Fra enkeltoppgaver til helautomatiserte arbeidsprosesser</p>
+          <ul class="service-list">
+            <li>Identifisering av prosesser som er modne for automatisering med Claude-baserte agenter</li>
+            <li>Design og bygging av <strong>spesialiserte AI-agenter</strong> for datainnhenting, dokumentproduksjon og kvalitetssikring</li>
+            <li>Integrasjon av Claude med eksisterende systemer via <strong>MCP-servere</strong> mot CRM, ERP og dokumentarkiv</li>
+            <li>Utnyttelse og videreutvikling av løsninger fra <strong>Agent Marketplace</strong> for raskere verdiuttak</li>
+            <li>Etablering av <strong>forvaltningsmodell for agenter</strong> inkludert eierskap, sikkerhet og livssyklushåndtering</li>
+          </ul>
+          <div class="service-deliverables">
+            <span>Leveranser</span>
+            <p>Automatiseringsanalyse, agentdesign og implementering, integrasjonskart, Agent Marketplace-oppsett og forvaltningsmodell</p>
+          </div>
+        </div>
+
+        <div class="service-card" style="grid-column: 1 / -1;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start;">
+            <div>
+              <div class="service-icon">🛡️</div>
+              <h3>Governance, sikkerhet og AI-policy</h3>
+              <p>Trygg bruk er en forutsetning for skalering</p>
+              <ul class="service-list">
+                <li>Utforming av <strong>AI-policy og retningslinjer for akseptabel bruk</strong></li>
+                <li>Vurdering av etterlevelse mot <strong>EU AI Act, GDPR og NIS2</strong> og relevante sektorreguleringer</li>
+                <li>Definisjon av <strong>dataklassifisering og håndteringsregler</strong></li>
+                <li>Design av <strong>rollebasert tilgangsstyring</strong></li>
+                <li>Etablering av <strong>løpende revisjons- og oppfølgingsrutiner</strong></li>
+                <li>Støtte til å bygge <strong>AI-kompetanse på styring- og ledelsesnivå</strong></li>
+              </ul>
+            </div>
+            <div>
+              <div class="service-deliverables">
+                <span>Leveranser</span>
+                <p>AI-policydokument, etterlevelsesanalyse, dataklassifiseringsrammeverk, tilgangsstyringsmodell og governance-rapportering</p>
+              </div>
+              <div style="margin-top: 20px; background: var(--brand-navy); border-radius: var(--radius-md); padding: 22px;">
+                <p style="font-size: 0.82rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">Relevante rammeverk</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <span style="background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 99px;">EU AI Act</span>
+                  <span style="background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 99px;">GDPR</span>
+                  <span style="background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 99px;">NIS2</span>
+                  <span style="background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 99px;">Åpenhetsloven</span>
+                  <span style="background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 99px;">ISO 27001</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- LEVERANSEMODELLER -->
+  <section class="alt">
+    <div class="sec-inner">
+      <p class="sec-label">Leveransemodeller</p>
+      <h2 class="sec-title">Vi tilpasser oss der du er</h2>
+      <p class="sec-sub">De fleste starter som prosjekt eller workshopserie og utvikler seg til et langsiktig samarbeid.</p>
+      <div class="delivery-grid">
+        <div class="delivery-card">
+          <div class="d-icon">📋</div>
+          <h4>Prosjekt</h4>
+          <p>Avgrenset leveranse med tydelig scope og milepæler. Gir forutsigbarhet og klare resultater.</p>
+        </div>
+        <div class="delivery-card">
+          <div class="d-icon">🎓</div>
+          <h4>Workshopserie</h4>
+          <p>Strukturerte sesjoner over 4–8 uker for kompetansebygging og samskaping mellom Sopra Steria og kundens team.</p>
+        </div>
+        <div class="delivery-card">
+          <div class="d-icon">🤝</div>
+          <h4>Retainer</h4>
+          <p>Løpende samarbeid der Sopra Steria fungerer som strategisk AI-partner med kontinuerlig støtte og utvikling.</p>
+        </div>
+        <div class="delivery-card" style="border-color: var(--brand-accent); box-shadow: 0 0 0 2px rgba(224,123,42,0.2);">
+          <div class="d-icon">⭐</div>
+          <h4>Kombinert</h4>
+          <p>Starter som prosjekt eller workshop og utvikler seg naturlig til et langsiktig strategisk partnerskap.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HVORFOR SOPRA STERIA -->
+  <section>
+    <div class="sec-inner">
+      <p class="sec-label">Hvorfor Sopra Steria</p>
+      <h2 class="sec-title">Teknisk dybde, endringsledelse og sektorforståelse</h2>
+      <p class="sec-sub">Vi kombinerer det som sjelden finnes på ett sted: evnen til å implementere, evnen til å endre og evnen til å forstå din kontekst.</p>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="w-icon">🌍</div>
+          <h4>Ledende nordisk miljø</h4>
+          <p>Teknologi- og rådgivningsmiljø med sterk tilstedeværelse i Norge, Sverige og Danmark, med dyp forståelse av nordisk arbeids- og næringslivskontekst.</p>
+        </div>
+        <div class="why-card">
+          <div class="w-icon">🏗️</div>
+          <h4>Enterprise-erfaring</h4>
+          <p>Erfaring fra komplekse innføringer i offentlig og privat sektor, der endringsledelse er like viktig som teknisk implementering.</p>
+        </div>
+        <div class="why-card">
+          <div class="w-icon">⚖️</div>
+          <h4>Norsk reguleringsforståelse</h4>
+          <p>Inngående kjennskap til norsk lovgivning, sektorreguleringer og arbeidsliv, inkludert Åpenhetsloven, personvernregelverket og EU AI Act.</p>
+        </div>
+        <div class="why-card">
+          <div class="w-icon">🔗</div>
+          <h4>Helhetlig leveranse</h4>
+          <p>Kombinasjon av teknisk implementering, endringsledelse og strategisk rådgivning under ett tak, uten gap mellom leverandørene.</p>
+        </div>
+        <div class="why-card" style="border: 2px solid var(--brand-accent);">
+          <div class="w-icon">🤝</div>
+          <h4>Anthropic-partner</h4>
+          <p>Dyp kjennskap til Claude-plattformen, tidlig tilgang til nye funksjoner og direkte linje til Anthropics team for komplekse spørsmål.</p>
+        </div>
+        <div class="why-card">
+          <div class="w-icon">🌱</div>
+          <h4>Bygger intern kapabilitet</h4>
+          <p>Fokus på å gjøre organisasjonen selvdrevet over tid, ikke på å skape leverandøravhengighet. Din kompetanse er målet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NESTE STEG -->
+  <section class="alt">
+    <div class="sec-inner">
+      <p class="sec-label">Neste steg</p>
+      <h2 class="sec-title">Kom i gang</h2>
+      <p class="sec-sub">En strukturert oppstart gir de beste forutsetningene for varig adopsjon og reell verdi.</p>
+      <div class="nextstep-grid">
+        <div class="nextstep-card">
+          <div class="ns-num">1</div>
+          <h4>Kartleggingssamtale</h4>
+        </div>
+        <div class="nextstep-card">
+          <div class="ns-num">2</div>
+          <h4>Modenhetsvurdering</h4>
+        </div>
+        <div class="nextstep-card">
+          <div class="ns-num">3</div>
+          <h4>Definering av pilotscope</h4>
+        </div>
+        <div class="nextstep-card">
+          <div class="ns-num">4</div>
+          <h4>Oppstart med team og første milepæl</h4>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top: 40px;">
+        <button onclick="showPage(2)" style="background: var(--brand-navy); color:#fff; border:none; padding: 14px 32px; border-radius:99px; font-family:'Mulish',sans-serif; font-weight:800; font-size:0.95rem; cursor:pointer; margin-right:12px; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">Se Claude Activation</button>
+        <button onclick="showPage(1)" style="background: transparent; color: var(--brand-navy); border: 2px solid var(--brand-border); padding: 14px 32px; border-radius:99px; font-family:'Mulish',sans-serif; font-weight:800; font-size:0.95rem; cursor:pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">← Tilbake til mulighetsrommet</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>Utarbeidet av Sopra Steria · Konfidensielt · Mai 2025</footer>
+</div>
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-' + id).classList.add('active');
+  var btns = document.querySelectorAll('.nav-btn[id]');
+  btns.forEach(function(b) { b.classList.remove('active'); });
+  var btn = document.getElementById('btn-' + id);
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
