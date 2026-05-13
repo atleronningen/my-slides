@@ -54,5 +54,15 @@
     "uploadedAt": "2026-05-12T12:28:45.865Z",
     "favorite": false,
     "pinned": false
+  },
+  "claude-rollout": {
+    "title": "Claude rollout",
+    "description": "",
+    "tags": [
+      "Claude"
+    ],
+    "uploadedAt": "2026-05-13T18:30:18.958Z",
+    "favorite": false,
+    "pinned": false
   }
 }
