@@ -45,16 +45,6 @@
     "pinned": false,
     "favorite": false
   },
-  "de-tre-store-gcp-vs-aws-vs-azure": {
-    "title": "GCP vs AWS vs Azure",
-    "description": "",
-    "tags": [
-      "AI"
-    ],
-    "uploadedAt": "2026-05-12T12:28:45.865Z",
-    "favorite": false,
-    "pinned": false
-  },
   "claude-rollout": {
     "title": "Claude rollout",
     "description": "",
