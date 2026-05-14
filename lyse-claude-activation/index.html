@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lyse × Claude – Mulighetsrommet</title>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brand-navy:   #005F33;   /* Lyse grønn primær */
+  --brand-accent: #338808;   /* Lys grønn aksent */
+  --brand-lt:     #eef7ee;
+  --brand-border: #b8d9b8;
+  --brand-muted:  #3a5e3a;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 99px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Mulish', sans-serif;
+  background: #f5f9f5;
+  color: #1a2e1a;
+  overflow-x: clip;
+  overscroll-behavior-y: contain;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: #fff;
+  border-bottom: 1.5px solid var(--brand-border);
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 12px;
+}
+.nav-logo-icon {
+  width: 36px; height: 36px;
+  background: var(--brand-navy);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-logo-text { font-weight: 800; font-size: 1rem; color: var(--brand-navy); }
+.nav-logo-sub { font-size: 0.75rem; color: var(--brand-muted); font-weight: 600; }
+.nav-btns { display: flex; gap: 8px; }
+.nav-btn {
+  padding: 8px 18px;
+  border: 1.5px solid var(--brand-border);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-family: 'Mulish', sans-serif;
+  font-weight: 700; font-size: 0.85rem;
+  color: var(--brand-muted); cursor: pointer;
+  transition: all 0.2s;
+}
+.nav-btn:hover, .nav-btn.active {
+  background: var(--brand-navy); color: #fff; border-color: var(--brand-navy);
+}
+.hamburger { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 4px; }
+.hamburger span { display: block; width: 22px; height: 2.5px; background: var(--brand-navy); border-radius: 2px; }
+
+/* HERO */
+.hero {
+  background: var(--brand-navy);
+  padding: 72px 40px 0;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -80px; right: -120px;
+  width: 500px; height: 500px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 50%;
+}
+.hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+.hero-label { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand-accent); margin-bottom: 16px; }
+.hero h1 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 900; color: #fff; line-height: 1.2; margin-bottom: 20px; }
+.hero h1 em { color: #7ddb6a; font-style: normal; }
+.hero p { font-size: 1rem; color: rgba(255,255,255,0.72); line-height: 1.75; max-width: 480px; }
+.hero-cta { margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--brand-accent); color: #fff; border: none;
+  border-radius: var(--radius-pill); padding: 14px 28px;
+  font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 14px;
+  cursor: pointer; transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.88; }
+.btn-ghost {
+  background: transparent; color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: var(--radius-pill); padding: 14px 28px;
+  font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 14px;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: #fff; }
+
+.hero-visual { display: flex; flex-direction: column; gap: 14px; padding-bottom: 48px; }
+.stat-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  display: flex; align-items: center; gap: 16px;
+  backdrop-filter: blur(8px);
+}
+.stat-icon {
+  width: 44px; height: 44px; border-radius: var(--radius-sm);
+  background: rgba(51,136,8,0.3);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.stat-val { font-size: 1.5rem; font-weight: 900; color: #fff; }
+.stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.6); font-weight: 600; margin-top: 2px; }
+
+.wave { display: block; width: 100%; margin-bottom: -2px; }
+
+/* SECTIONS */
+.section { padding: 72px 40px; }
+.section-alt { background: var(--brand-lt); }
+.section-inner { max-width: 1200px; margin: 0 auto; }
+.section-label { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand-accent); margin-bottom: 10px; }
+.section-title { font-size: clamp(1.4rem, 2.5vw, 1.9rem); font-weight: 900; color: var(--brand-navy); margin-bottom: 12px; }
+.section-sub { font-size: 0.95rem; color: #4a5e4a; line-height: 1.7; max-width: 640px; margin-bottom: 40px; }
+
+/* USE CASE GRID */
+.opp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.opp-card {
+  background: #fff;
+  border: 1.5px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  position: relative; overflow: hidden;
+  transition: transform 0.22s, box-shadow 0.22s;
+  border-top: 3px solid transparent;
+}
+.opp-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--brand-accent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.25s;
+}
+.opp-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,95,51,0.12); }
+.opp-card:hover::before { transform: scaleX(1); }
+.opp-num { font-size: 0.72rem; font-weight: 900; color: var(--brand-border); letter-spacing: 0.1em; margin-bottom: 8px; }
+.opp-priority {
+  display: inline-block;
+  font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em;
+  padding: 4px 10px; border-radius: var(--radius-pill);
+  margin-bottom: 12px; text-transform: uppercase;
+}
+.priority-high { background: #fde8e8; color: #c0392b; }
+.priority-mid  { background: #fef3cd; color: #8a6900; }
+.priority-low  { background: #e8f5e9; color: #2e7d32; }
+.opp-card h3 { font-size: 1rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 8px; }
+.opp-card p { font-size: 0.875rem; color: #4a5e4a; line-height: 1.65; margin-bottom: 16px; }
+.opp-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag { background: var(--brand-lt); color: var(--brand-muted); font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: var(--radius-pill); }
+
+/* TECH STACK */
+.tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.tech-col h4 { font-size: 0.85rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.tech-col h4 span { background: var(--brand-lt); border-radius: var(--radius-sm); padding: 4px 10px; font-size: 0.72rem; }
+.tech-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1.5px solid var(--brand-border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  font-size: 0.875rem; font-weight: 600; color: var(--brand-navy);
+}
+.tech-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.tech-dot.confirmed { background: #2e7d32; }
+.tech-dot.likely { background: #f59e0b; }
+
+/* COMPLIANCE */
+.risk-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.risk-card {
+  background: #fff;
+  border: 1.5px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+.risk-icon { font-size: 1.5rem; margin-bottom: 12px; }
+.risk-card h4 { font-size: 0.95rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 6px; }
+.risk-card p { font-size: 0.85rem; color: #4a5e4a; line-height: 1.6; }
+
+/* QUESTIONS */
+.questions-block {
+  background: var(--brand-navy);
+  border-radius: var(--radius-lg);
+  padding: 40px 48px;
+}
+.questions-block h3 { font-size: 1.2rem; font-weight: 900; color: #fff; margin-bottom: 28px; }
+.q-item { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+.q-num {
+  min-width: 32px; height: 32px;
+  background: rgba(51,136,8,0.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 900; color: #7ddb6a; flex-shrink: 0;
+}
+.q-item p { font-size: 0.9rem; color: rgba(255,255,255,0.85); line-height: 1.65; padding-top: 5px; }
+
+/* ========== PAGE 2: ACTIVATION ========== */
+.hero-activation {
+  background: var(--brand-navy);
+  padding: 72px 40px 0;
+  position: relative; overflow: hidden;
+}
+.hero-activation .hero-inner { grid-template-columns: 1fr; }
+.hero-activation h1 { max-width: 700px; }
+
+.quote-block {
+  background: #fff;
+  border: 1.5px solid var(--brand-border);
+  border-left: 4px solid var(--brand-accent);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  margin-bottom: 40px;
+}
+.quote-block p { font-size: 1rem; color: var(--brand-navy); font-weight: 600; line-height: 1.7; font-style: italic; }
+.quote-block cite { font-size: 0.8rem; color: var(--brand-muted); font-style: normal; font-weight: 700; display: block; margin-top: 10px; }
+
+/* TIMELINE */
+.timeline { position: relative; }
+.phase { display: flex; gap: 24px; margin-bottom: 40px; }
+.phase-left { display: flex; flex-direction: column; align-items: center; }
+.phase-dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--brand-accent); flex-shrink: 0;
+}
+.phase-line { width: 2px; flex: 1; background: var(--brand-border); margin-top: 8px; }
+.phase:last-child .phase-line { display: none; }
+.phase-content { flex: 1; padding-bottom: 8px; }
+.phase-num { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; color: var(--brand-accent); text-transform: uppercase; margin-bottom: 4px; }
+.phase-content h3 { font-size: 1.05rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 8px; }
+.phase-content > p { font-size: 0.875rem; color: #4a5e4a; line-height: 1.65; margin-bottom: 12px; }
+.phase-items { display: flex; flex-direction: column; gap: 8px; }
+.phase-item { display: flex; gap: 10px; align-items: flex-start; }
+.phase-item-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-border); flex-shrink: 0; margin-top: 6px; }
+.phase-item p { font-size: 0.85rem; color: #4a5e4a; line-height: 1.6; }
+
+/* LICENSE */
+.license-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.lic-card {
+  background: #fff;
+  border: 1.5px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  position: relative;
+}
+.lic-card.recommended {
+  border-color: var(--brand-accent);
+  border-width: 2px;
+}
+.lic-badge {
+  position: absolute; top: -12px; left: 24px;
+  background: var(--brand-accent); color: #fff;
+  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em;
+  padding: 4px 14px; border-radius: var(--radius-pill);
+  text-transform: uppercase;
+}
+.lic-card h3 { font-size: 1rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 8px; }
+.lic-card p { font-size: 0.875rem; color: #4a5e4a; line-height: 1.65; margin-bottom: 16px; }
+.lic-item { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; font-size: 0.85rem; color: #4a5e4a; }
+.lic-item::before { content: '✓'; color: var(--brand-accent); font-weight: 900; flex-shrink: 0; }
+
+/* ROLES */
+.roles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.role-card {
+  background: #fff;
+  border: 1.5px solid var(--brand-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.role-icon { font-size: 1.4rem; margin-bottom: 10px; }
+.role-card h4 { font-size: 0.9rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 6px; }
+.role-card p { font-size: 0.82rem; color: #4a5e4a; line-height: 1.6; }
+.role-pill { display: inline-block; background: var(--brand-lt); color: var(--brand-muted); font-size: 0.68rem; font-weight: 800; padding: 3px 10px; border-radius: var(--radius-pill); margin-bottom: 8px; }
+
+/* LAUNCH CHECKLIST */
+.checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.check-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  background: #fff; border: 1.5px solid var(--brand-border);
+  border-radius: var(--radius-sm); padding: 12px 16px;
+  font-size: 0.85rem; color: var(--brand-navy); font-weight: 600;
+}
+.check-item::before { content: '□'; font-size: 1rem; color: var(--brand-border); flex-shrink: 0; }
+
+/* RESOURCES */
+.resource-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.resource-card {
+  border: 1.5px solid var(--brand-border);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  background: #fff;
+}
+.resource-card h4 { font-size: 0.9rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 6px; }
+.resource-card p { font-size: 0.82rem; color: #4a5e4a; line-height: 1.6; }
+
+/* CTA BLOCK */
+.cta-block {
+  background: var(--brand-navy);
+  border-radius: var(--radius-lg);
+  padding: 36px 40px;
+  margin-top: 48px;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  gap: 32px; flex-wrap: wrap;
+}
+
+/* ========== PAGE 3: ADOPTION ========== */
+.adoption-bridge {
+  display: flex; align-items: center; gap: 16px;
+  background: var(--brand-lt);
+  border: 1.5px solid var(--brand-border);
+  border-radius: var(--radius-md);
+  padding: 20px 24px; margin-bottom: 48px;
+}
+.adoption-lag-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+}
+.adoption-steg-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+}
+.adoption-challenge-box {
+  background: var(--brand-navy);
+  border-radius: var(--radius-lg);
+  padding: 32px 40px; margin-bottom: 48px;
+  position: relative; overflow: hidden;
+}
+.adoption-neste-steg {
+  background: var(--brand-navy);
+  border-radius: var(--radius-lg);
+  padding: 48px 40px; margin-top: 56px;
+  position: relative; overflow: hidden;
+}
+
+.lag-card {
+  border: 1.5px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  background: #fff;
+  position: relative;
+}
+.lag-card.dimmed { opacity: 0.55; background: #f0f0f0; }
+.lag-num {
+  font-size: 0.68rem; font-weight: 900; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--brand-muted); margin-bottom: 8px;
+}
+.lag-card h3 { font-size: 0.95rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 8px; }
+.lag-card p { font-size: 0.82rem; color: #4a5e4a; line-height: 1.6; }
+.lag-done-badge {
+  position: absolute; top: 12px; right: 12px;
+  background: #e8f5e9; color: #2e7d32;
+  font-size: 0.68rem; font-weight: 800; padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.steg-card {
+  border: 1.5px solid var(--brand-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  background: #fff;
+}
+.steg-card h4 { font-size: 0.88rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 6px; }
+.steg-card p { font-size: 0.8rem; color: #4a5e4a; line-height: 1.6; }
+.steg-icon { font-size: 1.3rem; margin-bottom: 10px; }
+
+.leveranse-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+.leveranse-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.leveranse-card.vanligst {
+  border-color: var(--brand-accent); border-width: 2px;
+  background: rgba(51,136,8,0.12);
+}
+.leveranse-vanligst-badge {
+  font-size: 0.68rem; font-weight: 800; text-transform: uppercase;
+  color: #7ddb6a; letter-spacing: 0.08em; margin-bottom: 8px; display: block;
+}
+.leveranse-card h4 { font-size: 0.9rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
+.leveranse-card p { font-size: 0.8rem; color: rgba(255,255,255,0.7); line-height: 1.6; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .opp-grid { grid-template-columns: 1fr 1fr; }
+  .license-grid { grid-template-columns: 1fr 1fr; }
+  .adoption-lag-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 720px) {
+  nav { padding: 0 20px; }
+  .nav-btns { display: none; }
+  .hamburger { display: flex; }
+  .section, .hero, .hero-activation { padding: 48px 20px 0; }
+  .section { padding: 48px 20px; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-visual { padding-bottom: 40px; }
+  .opp-grid { grid-template-columns: 1fr; }
+  .tech-grid { grid-template-columns: 1fr; }
+  .risk-grid { grid-template-columns: 1fr; }
+  .license-grid { grid-template-columns: 1fr; }
+  .roles-grid { grid-template-columns: 1fr; }
+  .checklist { grid-template-columns: 1fr; }
+  .resource-grid { grid-template-columns: 1fr; }
+  .adoption-lag-grid { grid-template-columns: 1fr; }
+  .adoption-steg-grid { grid-template-columns: 1fr 1fr; }
+  .leveranse-grid { grid-template-columns: 1fr; }
+  .cta-block { flex-direction: column; align-items: flex-start; }
+  .questions-block { padding: 28px 24px; }
+  nav { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .adoption-bridge { flex-direction: column; align-items: flex-start; }
+}
+@media (min-width: 721px) {
+  .stat-card:nth-child(2) { transform: translateX(20px); }
+  .stat-card:nth-child(3) { transform: translateX(40px); }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M10 6v4l3 2" stroke="#7ddb6a" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    <div>
+      <div class="nav-logo-text">Lyse × Claude</div>
+      <div class="nav-logo-sub">AI-mulighetsrom</div>
+    </div>
+  </div>
+  <div class="nav-btns">
+    <button class="nav-btn active" id="btn-mulighet" onclick="showPage('mulighet')">Mulighetsrommet</button>
+    <button class="nav-btn" id="btn-activation" onclick="showPage('activation')">Claude Activation</button>
+    <button class="nav-btn" id="btn-adoption" onclick="showPage('adoption')">Claude Adoption</button>
+  </div>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Meny">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU (simple overlay) -->
+<div id="mobile-menu" style="display:none;position:fixed;top:64px;left:0;right:0;background:#fff;border-bottom:1.5px solid var(--brand-border);z-index:99;padding:16px 20px;">
+  <button class="nav-btn" style="width:100%;margin-bottom:8px;" onclick="showPage('mulighet');toggleMenu()">Mulighetsrommet</button>
+  <button class="nav-btn" style="width:100%;margin-bottom:8px;" onclick="showPage('activation');toggleMenu()">Claude Activation</button>
+  <button class="nav-btn" style="width:100%;" onclick="showPage('adoption');toggleMenu()">Claude Adoption</button>
+</div>
+
+<!-- ============================
+     PAGE 1: MULIGHETSROMMET
+============================= -->
+<div class="page active" id="page-mulighet">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <p class="hero-label">Claude Activation · Lyse-konsernet</p>
+        <h1>Norges energi- og telekomkonsern møter <em>Claude</em></h1>
+        <p>Lyse leverer kritisk infrastruktur til over 2 millioner nordmenn gjennom fornybar kraft, fiber, og mobilnett. Her er mulighetsrommet for Claude på tvers av hele konsernet.</p>
+        <div class="hero-cta">
+          <button class="btn-primary" onclick="showPage('activation')">Se Activation-plan →</button>
+          <button class="btn-ghost" onclick="showPage('adoption')">Claude Adoption</button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7ddb6a" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div>
+            <div class="stat-val">2 400+</div>
+            <div class="stat-label">Ansatte i konsernet (per 31.12.2025)</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7ddb6a" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          </div>
+          <div>
+            <div class="stat-val">~2 mill.</div>
+            <div class="stat-label">Kunder (mobil + bredbånd + strøm)</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7ddb6a" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div>
+            <div class="stat-val">26,7 mrd.</div>
+            <div class="stat-label">Omsetning 2025</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7ddb6a" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div>
+            <div class="stat-val">3,4 mrd.</div>
+            <div class="stat-label">Årsresultat 2025</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <svg class="wave" viewBox="0 0 1440 56" fill="none" preserveAspectRatio="none"><path d="M0 56V28C360 0 720 0 1080 28C1260 42 1380 48 1440 50V56H0Z" fill="#f5f9f5"/></svg>
+  </div>
+
+  <!-- USE CASES -->
+  <div class="section">
+    <div class="section-inner">
+      <p class="section-label">Bruksområder</p>
+      <h2 class="section-title">Konkrete muligheter for Lyse-konsernet</h2>
+      <p class="section-sub">Med 2 400 ansatte på tvers av energi, telekom, nett og infrastruktur er det brede muligheter for AI-støtte i daglig arbeid.</p>
+
+      <div class="opp-grid">
+        <div class="opp-card">
+          <div class="opp-num">01</div>
+          <div class="opp-priority priority-high">Høy prioritet</div>
+          <h3>Regulatorisk dokumentassistent</h3>
+          <p>Lyse opererer under NVE-regulering, Finanstilsynet (obligasjonsfinansiering), EU-taksonomikrav og NIS2. Claude kan hjelpe saksbehandlere med å tolke regelverk, utarbeide høringssvar og holde seg oppdatert på endringer i energi- og telekomlovgivningen.</p>
+          <div class="opp-tags"><span class="tag">NVE</span><span class="tag">NIS2</span><span class="tag">Compliance</span></div>
+        </div>
+        <div class="opp-card">
+          <div class="opp-num">02</div>
+          <div class="opp-priority priority-high">Høy prioritet</div>
+          <h3>Kundeservice og FAQ-vedlikehold</h3>
+          <p>Altibox er kåret til best kundeservice i bransjen. Claude kan støtte agenter i sanntid med svar på tekniske spørsmål om fiber, 5G og strøm, og holde selvbetjeningsinnholdet oppdatert på tvers av Altibox, ice og Lyse-merkene.</p>
+          <div class="opp-tags"><span class="tag">Altibox</span><span class="tag">ice</span><span class="tag">CX</span></div>
+        </div>
+        <div class="opp-card">
+          <div class="opp-num">03</div>
+          <div class="opp-priority priority-high">Høy prioritet</div>
+          <h3>Rapportproduksjon og styringsdokumenter</h3>
+          <p>Lyse utarbeider kvartalsvise finansrapporter, bærekraftsrapporter og presentasjoner til 15 eierkommuner og obligasjonsinvestorer. Claude kan halvere tid brukt på skriving og sammenstilling av data til disse leveransene.</p>
+          <div class="opp-tags"><span class="tag">Finans</span><span class="tag">ESG</span><span class="tag">Rapportering</span></div>
+        </div>
+        <div class="opp-card">
+          <div class="opp-num">04</div>
+          <div class="opp-priority priority-mid">Middels prioritet</div>
+          <h3>Teknisk dokumentasjon og HMS</h3>
+          <p>Lyse Produksjon og Lnett drifter vannkraftverk og strømnett med strenge HMS-krav. Claude kan bistå med å oppdatere prosedyrer, utarbeide risikovurderinger og oversette teknisk dokumentasjon til norsk/engelsk for internasjonale leverandører.</p>
+          <div class="opp-tags"><span class="tag">Lnett</span><span class="tag">HMS</span><span class="tag">Dokumentasjon</span></div>
+        </div>
+        <div class="opp-card">
+          <div class="opp-num">05</div>
+          <div class="opp-priority priority-mid">Middels prioritet</div>
+          <h3>Onboarding og kompetanseoverføring</h3>
+          <p>Med over 2 400 ansatte og pågående integrasjon av Ice og Altibox i Lyse Tele AS er strukturert onboarding kritisk. Claude kan fungere som intern kunnskapsbase for nyansatte på tvers av divisjoner og merkevarer.</p>
+          <div class="opp-tags"><span class="tag">HR</span><span class="tag">Lyse Tele</span><span class="tag">Integrasjon</span></div>
+        </div>
+        <div class="opp-card">
+          <div class="opp-num">06</div>
+          <div class="opp-priority priority-low">Lengre sikt</div>
+          <h3>AI-agent mot kunder via API</h3>
+          <p>Lyse har allerede en chatfunksjon mot kunder. Neste steg er en Claude-basert agent som kan håndtere strømprisforespørsler, fiberfeilsøking og oppsigelse/bestilling autonomt, integrert mot CRM og Altibox-plattformen.</p>
+          <div class="opp-tags"><span class="tag">API</span><span class="tag">Self-service</span><span class="tag">Automatisering</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KI-STATUS -->
+  <div class="section section-alt">
+    <div class="section-inner">
+      <p class="section-label">KI-modenhet</p>
+      <h2 class="section-title">Lyse og digitalisering</h2>
+      <p class="section-sub">Lyse-konsernet har tydelig strategisk ambisjon knyttet til digitalisering, og deler av organisasjonen er allerede teknologimodne.</p>
+      <div style="background: var(--brand-navy); border-radius: 20px; padding: 28px 32px; margin: 0 0 32px 0;">
+        <p style="font-weight:600;color:#fff;line-height:1.75;max-width:780px;">
+          «Lyse Produksjon har snudd seg fra å være et vannkraftselskap til å nesten være et softwareselskap. Vi har i prinsippet byttet ut Excel med programmeringsspråket Python.»
+        </p>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.55);margin-top:10px;">Teknologidirektør Sindre Tøsse, Lyse Produksjon – lysekonsern.no</p>
+      </div>
+      <div style="background:#fff;border:1.5px solid var(--brand-border);border-radius:var(--radius-md);padding:24px 28px;">
+        <p style="font-size:0.9rem;color:var(--brand-navy);font-weight:700;margin-bottom:8px;">Pågående digitaliseringsinitiativ:</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+          <li style="font-size:0.875rem;color:#4a5e4a;display:flex;gap:10px;"><span style="color:var(--brand-accent);font-weight:900;">→</span> Nasjonal 5G-utbygging og investering på 6,4 mrd. kr i 2024</li>
+          <li style="font-size:0.875rem;color:#4a5e4a;display:flex;gap:10px;"><span style="color:var(--brand-accent);font-weight:900;">→</span> 5G/IoT-lab på Innoasis i Stavanger (sammen med Nordic Edge)</li>
+          <li style="font-size:0.875rem;color:#4a5e4a;display:flex;gap:10px;"><span style="color:var(--brand-accent);font-weight:900;">→</span> Cognite-plattform for sanntidsanalyse i kraftproduksjon</li>
+          <li style="font-size:0.875rem;color:#4a5e4a;display:flex;gap:10px;"><span style="color:var(--brand-accent);font-weight:900;">→</span> Internasjonal UN-informasjonsmodell for strømnett (lastet ned 700+ ganger)</li>
+          <li style="font-size:0.875rem;color:#4a5e4a;display:flex;gap:10px;"><span style="color:var(--brand-accent);font-weight:900;">→</span> Grønt energiveikart for Rogaland – datadrevet politikkrådgivning</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- TECH STACK -->
+  <div class="section">
+    <div class="section-inner">
+      <p class="section-label">Teknologiplattform</p>
+      <h2 class="section-title">Bekreftet og sannsynlig tech-stack</h2>
+      <p class="section-sub">Basert på offentlig informasjon fra Lyses nettside og pressemeldinger.</p>
+      <div class="tech-grid">
+        <div class="tech-col">
+          <h4>Bekreftet <span>Fra nettsted</span></h4>
+          <div class="tech-item"><div class="tech-dot confirmed"></div>Altibox-plattformen (fiber + bredbånd)</div>
+          <div class="tech-item"><div class="tech-dot confirmed"></div>ice 5G-mobilnett (nasjonal utbygging)</div>
+          <div class="tech-item"><div class="tech-dot confirmed"></div>Cognite Data Fusion (kraftproduksjon)</div>
+          <div class="tech-item"><div class="tech-dot confirmed"></div>Python (Lyse Produksjon analytikk)</div>
+          <div class="tech-item"><div class="tech-dot confirmed"></div>NordPool-integrasjon (kraftbørs)</div>
+          <div class="tech-item"><div class="tech-dot confirmed"></div>IoT-lab / privat 5G (Innoasis)</div>
+        </div>
+        <div class="tech-col">
+          <h4>Sannsynlig <span>Typisk for bransjen</span></h4>
+          <div class="tech-item"><div class="tech-dot likely"></div>Microsoft 365 (Teams, SharePoint, Outlook)</div>
+          <div class="tech-item"><div class="tech-dot likely"></div>SAP / ERP-system (økonomi og HR)</div>
+          <div class="tech-item"><div class="tech-dot likely"></div>CRM-system (Salesforce eller tilsvarende)</div>
+          <div class="tech-item"><div class="tech-dot likely"></div>SCADA / nettverksstyring (Lnett)</div>
+          <div class="tech-item"><div class="tech-dot likely"></div>Azure eller AWS (skyinfrastruktur)</div>
+          <div class="tech-item"><div class="tech-dot likely"></div>BI-verktøy (Power BI eller Tableau)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLIANCE -->
+  <div class="section section-alt">
+    <div class="section-inner">
+      <p class="section-label">Rammeverk og risiko</p>
+      <h2 class="section-title">Compliance-profil for Lyse</h2>
+      <p class="section-sub">Lyse er et regulert energi- og telekomkonsern eid av kommuner. Det påvirker hvilke AI-rammeverk og dataavtaler som må på plass.</p>
+      <div class="risk-grid">
+        <div class="risk-card">
+          <div class="risk-icon">⚡</div>
+          <h4>NVE og energilovgivning</h4>
+          <p>Lyse er konsesjonspliktig vannkraftprodusent og nettselskap. AI-bruk i driftsavgjørelser må dokumenteres og kan være underlagt konsesjonsvilkår. Myndighetsutøvelse kan ikke automatiseres.</p>
+        </div>
+        <div class="risk-card">
+          <div class="risk-icon">🔒</div>
+          <h4>NIS2 og cybersikkerhet</h4>
+          <p>Som kritisk infrastrukturleverandør er Lyse underlagt NIS2-direktivet (trådt i kraft EU 2024, implementeres i Norge). AI-systemer som berører nettdrift må ha robust sikkerhetstesting og loggføring.</p>
+        </div>
+        <div class="risk-card">
+          <div class="risk-icon">🇪🇺</div>
+          <h4>EU AI Act og GDPR</h4>
+          <p>Lyse behandler persondata for over 2 millioner kunder. Databehandleravtale med Anthropic er påkrevd. EU AI Act (2024) stiller krav til transparens og risikovurdering for AI-systemer mot forbrukere.</p>
+        </div>
+        <div class="risk-card">
+          <div class="risk-icon">🏛️</div>
+          <h4>Kommunalt eierskap og anskaffelse</h4>
+          <p>Lyse eies av 15 kommuner. Vesentlige anskaffelser kan utløse krav om offentlig konkurranse (terskelregler). Claude-lisenser bør vurderes mot rammeavtalemuligheter for å sikre etterlevelse.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div class="section">
+    <div class="section-inner">
+      <div class="questions-block">
+        <h3>Spørsmål til IT-direktør / ledergruppen</h3>
+        <div class="q-item">
+          <div class="q-num">1</div>
+          <p>Lyse Produksjon bruker allerede Python og Cognite for dataanalyse. Er det etablert en konsernfelles AI-policy som regulerer bruk av generative AI-verktøy, eller håndteres dette per divisjon?</p>
+        </div>
+        <div class="q-item">
+          <div class="q-num">2</div>
+          <p>Lyse Tele har samlet Altibox, ice og Signal Bredbånd i én organisasjon siden 2024. Hvilke planer finnes for felles arbeidsverktøy og kunnskapsforvaltning på tvers av de tre merkevarene?</p>
+        </div>
+        <div class="q-item">
+          <div class="q-num">3</div>
+          <p>Altibox leverer kundeservice som kåres best i bransjen. Hva er det største friksjonspunktet for agentene i dag, og er dere åpne for å pilotere AI-støtte til førstelinjeteamet?</p>
+        </div>
+        <div class="q-item">
+          <div class="q-num">4</div>
+          <p>Lyse investerer 6+ mrd. kr. i infrastruktur og har et tydelig kostnadsfokus for 2025. Hvor stor andel av kontorarbeidstid brukes på dokumentproduksjon, rapportering og korrespondanse – og er dette noe dere har estimert?</p>
+        </div>
+        <div class="q-item">
+          <div class="q-num">5</div>
+          <p>Som NIS2-underlagt aktør: har Lyse gjennomført en vurdering av krav til AI-sikkerhetslogging og databehandleravtaler med leverandører som Anthropic, og hvem eier dette arbeidet?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-mulighet -->
+
+
+<!-- ============================
+     PAGE 2: ACTIVATION
+============================= -->
+<div class="page" id="page-activation">
+
+  <div class="hero-activation">
+    <div class="hero-inner">
+      <div>
+        <p class="hero-label">Claude Activation · Lyse-konsernet</p>
+        <h1>Fra pilotering til <em>konsernfelles</em> Claude-utrulling</h1>
+        <p style="color:rgba(255,255,255,0.72);font-size:1rem;line-height:1.75;max-width:600px;">Claude Activation handler om å komme i gang riktig: riktig lisensstrategi, riktig teknisk oppsett og riktig opplæring fra dag én.</p>
+      </div>
+    </div>
+    <svg class="wave" viewBox="0 0 1440 56" fill="none" preserveAspectRatio="none"><path d="M0 56V28C360 0 720 0 1080 28C1260 42 1380 48 1440 50V56H0Z" fill="#f5f9f5"/></svg>
+  </div>
+
+  <div class="section">
+    <div class="section-inner">
+
+      <div class="quote-block">
+        <p>«Bedrifter som ruller ut AI med strukturert onboarding og dedikerte interne ambassadører ser 3–4x høyere adopsjon enn de som gir tilgang uten opplæring.»</p>
+        <cite>Anthropic, Claude for Enterprise – Activation Best Practices</cite>
+      </div>
+
+      <p class="section-label">Fase-plan</p>
+      <h2 class="section-title" style="margin-bottom:40px;">Fire faser til Day-1 i Lyse</h2>
+
+      <div class="timeline">
+        <div class="phase">
+          <div class="phase-left"><div class="phase-dot"></div><div class="phase-line"></div></div>
+          <div class="phase-content">
+            <p class="phase-num">Fase 1 · Uke 1–2</p>
+            <h3>Administrativt forarbeid</h3>
+            <p>Etabler eierskap, sett mål og identifiser pilotgruppe på tvers av Lyse-konsernet.</p>
+            <div class="phase-items">
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Utpek AI-ansvarlig – fortrinnsvis på tvers av Lyse Tele, Lnett og Lyse Produksjon</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Definer suksesskriterier: tidsbesparelse, adopsjonsrate, NPS hos ansatte</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Velg pilotgrupper: 20–50 ansatte fra ulike divisjoner og funksjoner</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Klargjør databehandleravtale og NIS2-dokumentasjon med Anthropic</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-left"><div class="phase-dot"></div><div class="phase-line"></div></div>
+          <div class="phase-content">
+            <p class="phase-num">Fase 2 · Uke 2–3</p>
+            <h3>Lisensstrategi</h3>
+            <p>Med 2 400 ansatte anbefales faset tilnærming: start med kraft- og telekomfunksjonene, deretter bredere utrulling.</p>
+            <div class="phase-items">
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Piloter med 50–150 brukere (første kvartal)</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Evaluer bruk og justér use-case-bibliotekets prioriteringer</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Skaler til full utrulling basert på lærdom fra piloten</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Vurder enterprise-avtale for volumrabatt ved utrulling over 500 brukere</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-left"><div class="phase-dot"></div><div class="phase-line"></div></div>
+          <div class="phase-content">
+            <p class="phase-num">Fase 3 · Uke 3–4</p>
+            <h3>Teknisk konfigurasjon</h3>
+            <p>Sett opp Claude for Enterprise med riktig sikkerhet og integrasjoner for Lyses plattformlandskap.</p>
+            <div class="phase-items">
+              <div class="phase-item"><div class="phase-item-dot"></div><p>SSO-integrasjon (trolig Azure AD / Entra ID)</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Definer datasikkerhetspolicy: hva kan deles med Claude, hva kan ikke</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Vurder Projects for å gi Teams-spesifikke kontekster (Altibox, Lnett, Lyse Produksjon)</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Sett opp brukslogging for NIS2-dokumentasjon</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-left"><div class="phase-dot"></div><div class="phase-line"></div></div>
+          <div class="phase-content">
+            <p class="phase-num">Fase 4 · Uke 4–6</p>
+            <h3>Opplæring og lansering</h3>
+            <p>Rull ut med Trainers, Champions og Power Users. Lag interne use-case-eksempler tilpasset Lyses kontekst.</p>
+            <div class="phase-items">
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Train the Trainer: 2–4 interne Trainers kurses av Sopra Steria</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Opprett Champions i hvert forretningsområde (Tele, Energi, Nett, Stab)</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Lag Lyse-tilpassede prompt-biblioteker: strømprisanalyse, kundeservicemaler, HMS-dokumentasjon</p></div>
+              <div class="phase-item"><div class="phase-item-dot"></div><p>Lanseringsevent og kommunikasjon til alle ansatte</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="section-label" style="margin-top:56px;">Lisensstrategi</p>
+      <h2 class="section-title" style="margin-bottom:32px;">To veier inn</h2>
+      <div class="license-grid">
+        <div class="lic-card">
+          <h3>Full utrulling fra dag én</h3>
+          <p>Alle 2 400 ansatte får tilgang samtidig. Gir maksimal rekkevidde, men krever mer forarbeid i opplæring og policysetting.</p>
+          <div class="lic-item">Én felles lanseringsdato</div>
+          <div class="lic-item">Enklere administrasjon på sikt</div>
+          <div class="lic-item">Høyere initialrisiko for lavere adopsjon</div>
+          <div class="lic-item">Kan passe hvis sterk sentral HR-funksjon</div>
+        </div>
+        <div class="lic-card recommended">
+          <div class="lic-badge">Anbefalt</div>
+          <h3>Faset utrulling</h3>
+          <p>Start med pilot-divisjon (f.eks. Lyse Stab + Lyse Tele), evaluer, og skaler. Laverer risiko og gir lærdom før bred utrulling.</p>
+          <div class="lic-item">Pilot 50–150 brukere i kvartal 1</div>
+          <div class="lic-item">Mulighet for justering basert på funn</div>
+          <div class="lic-item">Champions bygger intern momentum</div>
+          <div class="lic-item">Skalerer til full utrulling i kvartal 2–3</div>
+        </div>
+      </div>
+
+      <p class="section-label" style="margin-top:56px;">Roller</p>
+      <h2 class="section-title" style="margin-bottom:32px;">Tre nøkkelroller i Lyse</h2>
+      <div class="roles-grid">
+        <div class="role-card">
+          <div class="role-icon">🎓</div>
+          <div class="role-pill">2–4 personer</div>
+          <h4>Claude Trainers</h4>
+          <p>Interne eksperter som kurses av Sopra Steria. Holder workshops for kolleger og er primærkontakt for spørsmål om bruk. Ideelt: én per forretningsområde.</p>
+        </div>
+        <div class="role-card">
+          <div class="role-icon">🏆</div>
+          <div class="role-pill">5–10 personer</div>
+          <h4>Claude Champions</h4>
+          <p>Entusiastiske tidligadoptere i hvert team som inspirerer kolleger, deler tips og melder tilbake use-cases til Trainers. Ikke en fulltidsstilling.</p>
+        </div>
+        <div class="role-card">
+          <div class="role-icon">⚡</div>
+          <div class="role-pill">Alle øvrige</div>
+          <h4>Power Users</h4>
+          <p>Ansatte som bruker Claude aktivt i daglig arbeid. Måles på tidsbesparelse og kvalitetsforbedring. Primærmålgruppe for onboarding-programmet.</p>
+        </div>
+      </div>
+
+      <p class="section-label" style="margin-top:56px;">Lanseringsdagen</p>
+      <h2 class="section-title" style="margin-bottom:32px;">Sjekkliste for Day-1</h2>
+      <div class="checklist">
+        <div class="check-item">Alle brukere har fått aktiveringslink og logget inn</div>
+        <div class="check-item">SSO fungerer med Lyses identitetsleverandør</div>
+        <div class="check-item">Lyse-tilpassede prompt-eksempler er tilgjengelige</div>
+        <div class="check-item">Trainers har holdt innledende 60-min kurs</div>
+        <div class="check-item">Intern kommunikasjonskanal (Teams) for spørsmål er satt opp</div>
+        <div class="check-item">Brukslogging aktivert (NIS2-krav)</div>
+        <div class="check-item">Datasikkerhetspolicy kommunisert til alle brukere</div>
+        <div class="check-item">Feedback-loop etablert: Champions → Trainers → IT</div>
+      </div>
+
+      <p class="section-label" style="margin-top:56px;">Ressurser fra Anthropic</p>
+      <h2 class="section-title" style="margin-bottom:32px;">Tilgjengelige læringsressurser</h2>
+      <div class="resource-grid">
+        <div class="resource-card">
+          <h4>AI Fluency Program</h4>
+          <p>Strukturert opplæringsprogram fra Anthropic for å bygge grunnleggende AI-kompetanse i organisasjonen. Tilpasset ulike roller og erfaringsnivå.</p>
+        </div>
+        <div class="resource-card">
+          <h4>Train the Trainer</h4>
+          <p>Sopra Steria sertifiserer interne Trainers i Lyse med metodikk og materiale. Trainers får verktøy for å holde workshops internt.</p>
+        </div>
+        <div class="resource-card">
+          <h4>Claude for Enterprise</h4>
+          <p>Dedikert enterprise-instans med SSO, brukeradministrasjon, loggføring og mulighet for tilpassede systemprompter per bruksområde.</p>
+        </div>
+        <div class="resource-card">
+          <h4>Prompt-bibliotek og best practices</h4>
+          <p>Sopra Steria utarbeider Lyse-tilpassede prompt-maler for de høyprioriterte use-casene: energirapportering, kundeservice og teknisk dokumentasjon.</p>
+        </div>
+      </div>
+
+      <!-- CTA til Adoption -->
+      <div class="cta-block">
+        <div>
+          <p class="section-label" style="color:var(--brand-accent);">Neste steg</p>
+          <h3 style="font-weight:800;font-size:1.3rem;color:#fff;margin-bottom:8px;">Klar for å hente ut det fulle potensialet?</h3>
+          <p style="font-size:0.9rem;color:rgba(255,255,255,0.7);max-width:520px;line-height:1.65;">
+            Activation er starten. Claude Adoption handler om å bygge organisatorisk kapabilitet som gjør Claude til et varig konkurransefortrinn for Lyse – ikke bare et verktøy for noen få.
+          </p>
+        </div>
+        <button onclick="showPage('adoption')" class="btn-primary">Se Claude Adoption →</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /page-activation -->
+
+
+<!-- ============================
+     PAGE 3: ADOPTION
+============================= -->
+<div class="page" id="page-adoption">
+
+  <div class="hero-activation">
+    <div class="hero-inner">
+      <div>
+        <p class="hero-label">Claude Adoption · Lyse-konsernet</p>
+        <h1>Fra lisens til <em>konkurransefortrinn</em></h1>
+        <p style="color:rgba(255,255,255,0.72);font-size:1rem;line-height:1.75;max-width:620px;">Sopra Steria hjelper Lyse å hente ut den reelle verdien av Claude – med strukturert kompetansebygging, tilpassede verktøy og varig governance.</p>
+      </div>
+    </div>
+    <svg class="wave" viewBox="0 0 1440 56" fill="none" preserveAspectRatio="none"><path d="M0 56V28C360 0 720 0 1080 28C1260 42 1380 48 1440 50V56H0Z" fill="#f5f9f5"/></svg>
+  </div>
+
+  <div class="section">
+    <div class="section-inner">
+
+      <!-- Bro-komponent -->
+      <div class="adoption-bridge">
+        <div style="font-size:1.8rem;">✅</div>
+        <div>
+          <p style="font-size:0.85rem;font-weight:800;color:var(--brand-navy);margin-bottom:4px;">Aktivering og innføring er fullført — Adoption er neste steg</p>
+          <p style="font-size:0.82rem;color:#4a5e4a;line-height:1.6;">Lyse har gjennomført Lag 1: teknisk oppsett, governance-rammeverk, pilotgrupper og Day-1 lansering. Claude Adoption bygger organisatorisk kapabilitet på dette fundamentet.</p>
+          <button onclick="showPage('activation')" style="margin-top:10px;background:none;border:1.5px solid var(--brand-border);border-radius:var(--radius-pill);padding:6px 16px;font-family:'Mulish',sans-serif;font-size:0.78rem;font-weight:700;color:var(--brand-navy);cursor:pointer;">← Se Claude Activation (Lag 1)</button>
+        </div>
+      </div>
+
+      <!-- Utfordringen -->
+      <div class="adoption-challenge-box">
+        <div style="position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:rgba(255,255,255,0.03);border-radius:50%;"></div>
+        <p class="section-label" style="color:var(--brand-accent);">Utfordringen vi hjelper med</p>
+        <h3 style="font-size:1.2rem;font-weight:900;color:#fff;margin-bottom:16px;">Hvorfor innføring er mer enn teknisk oppsett</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <span style="color:#f87171;font-weight:900;flex-shrink:0;margin-top:1px;">→</span>
+            <p style="font-size:0.85rem;color:rgba(255,255,255,0.8);line-height:1.6;">De fleste virksomheter aktiverer lisensen, men henter ikke ut potensialet</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <span style="color:#f87171;font-weight:900;flex-shrink:0;margin-top:1px;">→</span>
+            <p style="font-size:0.85rem;color:rgba(255,255,255,0.8);line-height:1.6;">Uten struktur blir Claude et personlig verktøy for noen få, ikke en organisatorisk kapabilitet</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <span style="color:#f87171;font-weight:900;flex-shrink:0;margin-top:1px;">→</span>
+            <p style="font-size:0.85rem;color:rgba(255,255,255,0.8);line-height:1.6;">Brukerne mangler felles metoder, maler og tilpassede verktøy som sikrer gjenbruk og kvalitet</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <span style="color:#f87171;font-weight:900;flex-shrink:0;margin-top:1px;">→</span>
+            <p style="font-size:0.85rem;color:rgba(255,255,255,0.8);line-height:1.6;">Uten governance og policy oppstår usikkerhet om hva som er lov, og adopsjon stopper opp</p>
+          </div>
+        </div>
+        <p style="margin-top:20px;font-size:0.9rem;color:#7ddb6a;font-weight:700;">Sopra Steria fyller gapet mellom det Anthropic leverer og det Lyse trenger for å lykkes.</p>
+      </div>
+
+      <!-- Tre lag -->
+      <p class="section-label" style="margin-top:56px;">Vår tilnærming</p>
+      <h2 class="section-title" style="margin-bottom:12px;">Tre lag av verdi</h2>
+      <p class="section-sub">Vi møter Lyse der dere er, og bygger kapabilitet lag for lag. Lagene kan kjøres sekvensielt eller parallelt.</p>
+      <div class="adoption-lag-grid">
+        <div class="lag-card dimmed">
+          <div class="lag-done-badge">✓ Fullført</div>
+          <div class="lag-num">Lag 1</div>
+          <h3>Kom i gang riktig</h3>
+          <p>Teknisk oppsett, governance, launch-kommunikasjon og første bølge av brukere. Basert på Anthropics innføringsrammeverk, tilpasset Lyse.</p>
+          <button onclick="showPage('activation')" style="margin-top:12px;background:none;border:1.5px solid #ccc;border-radius:var(--radius-pill);padding:6px 16px;font-family:'Mulish',sans-serif;font-size:0.78rem;font-weight:700;color:#888;cursor:pointer;">Se Activation →</button>
+        </div>
+        <div class="lag-card" style="border-color:var(--brand-accent);border-width:2px;">
+          <div style="position:absolute;top:-12px;left:24px;background:var(--brand-accent);color:#fff;font-size:0.68rem;font-weight:800;padding:4px 14px;border-radius:var(--radius-pill);text-transform:uppercase;">Vi er her nå</div>
+          <div class="lag-num">Lag 2</div>
+          <h3>Bygg organisatorisk kapabilitet</h3>
+          <p>Champions-program, opplæring, brukertilpasning og interne ressurser som sikrer at adopsjon sprer seg og holder seg i Lyse-konsernet.</p>
+        </div>
+        <div class="lag-card">
+          <div class="lag-num">Lag 3</div>
+          <h3>Hent ut det fulle potensialet</h3>
+          <p>Skreddersydde skills, plugins, artifacts, agentløsninger og et internt AI-bibliotek som gjør Claude til et konkurransefortrinn for Lyse.</p>
+        </div>
+      </div>
+
+      <!-- Tjenester -->
+      <p class="section-label" style="margin-top:64px;">Tjenester</p>
+      <h2 class="section-title" style="margin-bottom:40px;">Fire tjenester som bygger Lyse</h2>
+
+      <!-- Tjeneste 1: Champions -->
+      <div style="background:#fff;border:1.5px solid var(--brand-border);border-radius:var(--radius-lg);padding:32px 36px;margin-bottom:20px;">
+        <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">
+          <div style="font-size:2rem;flex-shrink:0;">🏆</div>
+          <div style="flex:1;min-width:280px;">
+            <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--brand-accent);margin-bottom:6px;">Tjeneste</p>
+            <h3 style="font-size:1.1rem;font-weight:900;color:var(--brand-navy);margin-bottom:8px;">Champions-program og kompetansebygging</h3>
+            <p style="font-size:0.875rem;color:#4a5e4a;font-style:italic;margin-bottom:16px;">Adopsjon skjer ikke av seg selv. Den bygges innenfra.</p>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Identifisering og opplæring av interne Champions og Trainers som driver adopsjon i egne team</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Tilpasset opplæringsløp basert på Anthropics AI Fluency-materiale, supplert med rolle- og sektorspesifikt innhold fra Sopra Steria</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Train-the-Trainer-program som gjør Lyse selvdrevet over tid</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Rollespesifikke workshop-serier for HR, finans, juss, IT, salg og drift</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Etablering av interne fellesskap og delekanaler for gjenbruk av maler, erfaringer og gevinster</div>
+            </div>
+            <div style="background:var(--brand-lt);border-radius:var(--radius-sm);padding:12px 16px;">
+              <p style="font-size:0.78rem;font-weight:800;color:var(--brand-navy);margin-bottom:4px;">Leveranser</p>
+              <p style="font-size:0.8rem;color:#4a5e4a;line-height:1.6;">Champions-program med opplæringsplan, tilpasset AI Fluency-kurspakke, workshop-design per funksjon og verktøy for måling av adopsjon og kompetanse.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tjeneste 2: Claude-tilpasning -->
+      <div style="background:#fff;border:1.5px solid var(--brand-border);border-radius:var(--radius-lg);padding:32px 36px;margin-bottom:20px;">
+        <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">
+          <div style="font-size:2rem;flex-shrink:0;">⚙️</div>
+          <div style="flex:1;min-width:280px;">
+            <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--brand-accent);margin-bottom:6px;">Tjeneste</p>
+            <h3 style="font-size:1.1rem;font-weight:900;color:var(--brand-navy);margin-bottom:8px;">Claude-tilpasning for Lyse</h3>
+            <p style="font-size:0.875rem;color:#4a5e4a;font-style:italic;margin-bottom:16px;">Gjenbruk, konsistens og kvalitet – bygget inn fra starten.</p>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Kartlegging av Lyses viktigste brukstilfeller og design av tilpassede Claude-ressurser</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Utvikling av skreddersydde <strong>prompts og prompt-biblioteker</strong> tilpasset roller, prosesser og fagområder i Altibox, ice og Lnett</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Oppsett av <strong>Projects og tilpassede instruksjoner</strong> som gir Claude kontekst om Lyses tone og arbeidsmetodikk</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Design av <strong>artifacts og maler</strong> for rapporter, tilbud, analyser og eierkommunepresentasjoner</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Etablering av et <strong>internt AI-bibliotek</strong> og implementering av Lyses designsystem slik at output er konsistent og merkevaretilpasset</div>
+            </div>
+            <div style="background:var(--brand-lt);border-radius:var(--radius-sm);padding:12px 16px;">
+              <p style="font-size:0.78rem;font-weight:800;color:var(--brand-navy);margin-bottom:4px;">Leveranser</p>
+              <p style="font-size:0.8rem;color:#4a5e4a;line-height:1.6;">Prompt-bibliotek, tilpassede Projects-oppsett, artifact-maler, merkevaretilpassede output-maler og forvaltningsrutiner.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tjeneste 3: Agenter -->
+      <div style="background:#fff;border:1.5px solid var(--brand-border);border-radius:var(--radius-lg);padding:32px 36px;margin-bottom:20px;">
+        <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">
+          <div style="font-size:2rem;flex-shrink:0;">🤖</div>
+          <div style="flex:1;min-width:280px;">
+            <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--brand-accent);margin-bottom:6px;">Tjeneste</p>
+            <h3 style="font-size:1.1rem;font-weight:900;color:var(--brand-navy);margin-bottom:8px;">Agent Marketplace og automatisering</h3>
+            <p style="font-size:0.875rem;color:#4a5e4a;font-style:italic;margin-bottom:16px;">Fra enkeltoppgaver til helautomatiserte arbeidsprosesser.</p>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Identifisering av prosesser i Lyse som er modne for automatisering med Claude-baserte agenter</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Design og bygging av <strong>spesialiserte AI-agenter</strong> for datainnhenting, dokumentproduksjon og kvalitetssikring</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Integrasjon med Lyses systemer via <strong>MCP-servere</strong>: Cognite, CRM, NordPool og dokumentarkiv</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Utnyttelse av løsninger fra <strong>Agent Marketplace</strong> for raskere verdiuttak</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Etablering av <strong>forvaltningsmodell for agenter</strong>, inkludert eierskap, sikkerhet og livssyklushåndtering</div>
+            </div>
+            <div style="background:var(--brand-lt);border-radius:var(--radius-sm);padding:12px 16px;">
+              <p style="font-size:0.78rem;font-weight:800;color:var(--brand-navy);margin-bottom:4px;">Leveranser</p>
+              <p style="font-size:0.8rem;color:#4a5e4a;line-height:1.6;">Automatiseringsanalyse, agentdesign og implementering, integrasjonskart, Agent Marketplace-oppsett og forvaltningsmodell.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tjeneste 4: Governance -->
+      <div style="background:#fff;border:1.5px solid var(--brand-border);border-radius:var(--radius-lg);padding:32px 36px;margin-bottom:48px;">
+        <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">
+          <div style="font-size:2rem;flex-shrink:0;">🛡️</div>
+          <div style="flex:1;min-width:280px;">
+            <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--brand-accent);margin-bottom:6px;">Tjeneste</p>
+            <h3 style="font-size:1.1rem;font-weight:900;color:var(--brand-navy);margin-bottom:8px;">Governance, sikkerhet og AI-policy</h3>
+            <p style="font-size:0.875rem;color:#4a5e4a;font-style:italic;margin-bottom:16px;">Trygg bruk er en forutsetning for skalering.</p>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Utforming av <strong>AI-policy og retningslinjer for akseptabel bruk</strong> tilpasset Lyses sektorreguleringer</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Vurdering av etterlevelse mot <strong>EU AI Act, GDPR, NIS2</strong> og NVE-krav</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Definisjon av <strong>dataklassifisering og håndteringsregler</strong></div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Design av <strong>rollebasert tilgangsstyring</strong> og løpende revisjonsrutiner</div>
+              <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;line-height:1.6;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;margin-top:1px;">→</span>Støtte til å bygge <strong>AI-kompetanse på styringsnivå</strong>, relevant for Lyses kommunale eierstruktur</div>
+            </div>
+            <div style="background:var(--brand-lt);border-radius:var(--radius-sm);padding:12px 16px;">
+              <p style="font-size:0.78rem;font-weight:800;color:var(--brand-navy);margin-bottom:4px;">Leveranser</p>
+              <p style="font-size:0.8rem;color:#4a5e4a;line-height:1.6;">AI-policy-dokument, etterlevelsesanalyse, dataklassifiseringsrammeverk, tilgangsstyringsmodell og governance-rapportering.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leveransemodeller -->
+      <p class="section-label">Leveransemodeller</p>
+      <h2 class="section-title" style="margin-bottom:12px;">Vi tilpasser oss der Lyse er</h2>
+      <p class="section-sub">De fleste starter som prosjekt eller workshop-serie og utvikler seg til et langsiktig samarbeid.</p>
+      <div class="adoption-challenge-box">
+        <div style="position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:rgba(255,255,255,0.03);border-radius:50%;"></div>
+        <div class="leveranse-grid">
+          <div class="leveranse-card">
+            <h4>Prosjekt</h4>
+            <p>Avgrenset leveranse med tydelig scope og milepæler. Passer for oppstart av Champions-program eller Claude-tilpasning.</p>
+          </div>
+          <div class="leveranse-card">
+            <h4>Workshop-serie</h4>
+            <p>Strukturerte sesjoner over 4–8 uker for kompetansebygging og samskaping på tvers av Lyses divisjoner.</p>
+          </div>
+          <div class="leveranse-card vanligst">
+            <span class="leveranse-vanligst-badge">Vanligst</span>
+            <h4>Kombinert</h4>
+            <p>Prosjektstart eller workshop som utvikler seg til et løpende samarbeid. Sopra Steria som strategisk AI-partner for Lyse.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hvorfor 2S -->
+      <div style="margin-top:48px;background:#fff;border:1.5px solid var(--brand-border);border-radius:var(--radius-lg);padding:32px 36px;">
+        <p class="section-label">Hvorfor Sopra Steria</p>
+        <h3 style="font-size:1.1rem;font-weight:900;color:var(--brand-navy);margin-bottom:20px;">Teknisk dybde, endringsledelse og sektorforståelse – samlet</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;">✓</span>Ledende nordisk teknologi- og rådgivningsmiljø</div>
+          <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;">✓</span>Erfaring fra komplekse enterprise-innføringer i offentlig og privat sektor</div>
+          <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;">✓</span>Inngående forståelse av norsk regulering, arbeidsliv og energisektoren</div>
+          <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;">✓</span>Kombinasjon av teknisk implementering, endringsledelse og strategisk rådgivning</div>
+          <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;">✓</span><strong>Anthropic-partner</strong> med dyp kjennskap til Claude-plattformen</div>
+          <div style="display:flex;gap:10px;font-size:0.875rem;color:#4a5e4a;"><span style="color:var(--brand-accent);font-weight:900;flex-shrink:0;">✓</span>Fokus på å bygge intern kapabilitet – ikke leverandøravhengighet</div>
+        </div>
+      </div>
+
+      <!-- Neste steg -->
+      <div class="adoption-neste-steg">
+        <div style="position:absolute;bottom:-60px;right:-60px;width:220px;height:220px;background:rgba(255,255,255,0.03);border-radius:50%;"></div>
+        <p class="section-label" style="color:var(--brand-accent);">Kom i gang</p>
+        <h3 style="font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:16px;">Klar for neste steg med Lyse?</h3>
+        <p style="font-size:0.95rem;color:rgba(255,255,255,0.72);max-width:560px;line-height:1.75;margin-bottom:32px;">
+          Start med en kartleggingssamtale og modenhetsvurdering, definer pilotscope – og kom i gang med første milepæl.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="btn-primary">Kartleggingssamtale →</button>
+          <button class="btn-ghost">Kontakt Sopra Steria</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /page-adoption -->
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-btn[id]').forEach(b => b.classList.remove('active'));
+  var btn = document.getElementById('btn-' + id);
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function toggleMenu() {
+  var m = document.getElementById('mobile-menu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+</body>
+</html>
