@@ -510,6 +510,7 @@ footer strong { color: rgba(255,255,255,0.7); }
   .adoption-challenge-box { padding: 24px 20px; }
   .adoption-neste-steg { padding: 28px 20px; }
   .adoption-bridge { flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px; }
+  .adoption-cta { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 720px) {
   /* Ingen backdrop-filter på mobil */
@@ -985,6 +986,19 @@ footer strong { color: rgba(255,255,255,0.7); }
             <p>Gir interne lærings- og utviklingsprofesjonelle verktøyene til å levere kontekstrik opplæring i stor skala. Utvikler egne Claude-eksperter som kjenner MPKs spesifikke prosesser.</p>
           </div>
         </div>
+      </div>
+
+      <!-- UPSELL: Veien videre til Adoption -->
+      <div style="background:var(--mpk-navy);border-radius:var(--radius-lg);padding:36px 40px;margin-top:48px;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;">
+        <div>
+          <p class="section-label" style="color:var(--mpk-orange);">Neste steg</p>
+          <h3 style="font-family:'Mulish',sans-serif;font-weight:800;font-size:1.3rem;color:#fff;margin-bottom:8px;">Klar for å hente ut det fulle potensialet?</h3>
+          <p style="font-size:0.9rem;color:rgba(255,255,255,0.7);max-width:520px;line-height:1.65;">Activation er starten. Claude Adoption handler om å bygge organisatorisk kapabilitet som gjør Claude til et varig konkurransefortrinn for MPK — ikke bare et verktøy for noen få.</p>
+        </div>
+        <button onclick="showPage('adoption')" style="flex-shrink:0;background:var(--mpk-orange);color:#fff;border:none;border-radius:var(--radius-pill);padding:14px 28px;font-family:'Mulish',sans-serif;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;">
+          Se Claude Adoption
+          <svg viewBox="0 0 20 20" fill="currentColor" width="16"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+        </button>
       </div>
 
     </div>
