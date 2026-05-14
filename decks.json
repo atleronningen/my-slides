@@ -34,7 +34,8 @@
     "description": "",
     "tags": [
       "claude"
-    ]
+    ],
+    "uploadedAt": "2026-04-30T08:40:25Z"
   },
   "lyse-claude": {
     "title": "lyse-claude",
@@ -43,7 +44,8 @@
       "claude"
     ],
     "pinned": false,
-    "favorite": false
+    "favorite": false,
+    "uploadedAt": "2026-05-12T08:58:34Z"
   },
   "claude-rollout": {
     "title": "Claude rollout",
@@ -96,5 +98,23 @@
     "uploadedAt": "2026-05-14T08:24:44.254Z",
     "favorite": false,
     "pinned": false
+  },
+  "Architecture-AI": {
+    "uploadedAt": "2026-05-01T07:09:50Z"
+  },
+  "incubator-ai-bc": {
+    "uploadedAt": "2026-05-04T06:09:30Z"
+  },
+  "incubator-ai-demo": {
+    "uploadedAt": "2026-05-01T15:12:29Z"
+  },
+  "incubator-ai-web": {
+    "uploadedAt": "2026-05-04T11:35:42Z"
+  },
+  "strat-a-thon": {
+    "uploadedAt": "2026-05-06T10:11:26Z"
+  },
+  "workplace-intelligence-prototype": {
+    "uploadedAt": "2026-05-01T08:28:24Z"
   }
 }
